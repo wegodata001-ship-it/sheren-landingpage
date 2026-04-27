@@ -1,0 +1,97 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background:
+    radial-gradient(circle at top, rgba(230, 216, 200, 0.45), transparent 32%),
+    linear-gradient(180deg, #fbf8f4 0%, #f7f1ea 100%);
+  transition:
+    opacity 0.55s ease,
+    visibility 0.55s ease;
+}
+
+.fadeOut {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.inner {
+  display: grid;
+  justify-items: center;
+  gap: 0.85rem;
+  text-align: center;
+}
+
+.brandMark {
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 50%;
+  border: 1px solid rgba(138, 111, 82, 0.16);
+  background:
+    radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.86), transparent 32%),
+    linear-gradient(135deg, rgba(230, 216, 200, 0.9), rgba(191, 174, 155, 0.75));
+  box-shadow: 0 14px 34px rgba(95, 74, 56, 0.12);
+}
+
+.inner strong {
+  color: #5f4a38;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  letter-spacing: 0.04em;
+}
+
+.inner p {
+  margin: 0;
+  color: #6f655c;
+}
+
+.loader {
+  position: relative;
+  width: 4.5rem;
+  height: 1.25rem;
+}
+
+.loader span {
+  position: absolute;
+  top: 50%;
+  width: 1rem;
+  height: 1rem;
+  margin-top: -0.5rem;
+  border-radius: 50%;
+  background: rgba(138, 111, 82, 0.8);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.loader span:first-child {
+  right: 0.7rem;
+}
+
+.loader span:last-child {
+  left: 0.7rem;
+  animation-delay: 0.25s;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: translateY(0) scale(0.82);
+    opacity: 0.45;
+  }
+
+  50% {
+    transform: translateY(-4px) scale(1);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .overlay {
+    transition: none;
+  }
+
+  .loader span {
+    animation: none;
+    opacity: 1;
+  }
+}

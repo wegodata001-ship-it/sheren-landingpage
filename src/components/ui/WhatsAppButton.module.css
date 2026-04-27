@@ -1,0 +1,53 @@
+.wrapper {
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 40;
+  transform: scale(0.9);
+  transform-origin: bottom right;
+}
+
+.stack {
+  display: grid;
+  gap: 0.55rem;
+  justify-items: end;
+}
+
+.button {
+  min-width: 8.2rem;
+  box-shadow: 0 12px 24px rgba(49, 37, 28, 0.14);
+}
+
+.buttonPrimary {
+  animation: pulse 3s ease-in-out infinite;
+}
+
+.buttonSecondary {
+  min-height: 2.7rem;
+  background: rgba(251, 248, 244, 0.96);
+  color: var(--color-ink);
+  border: 1px solid rgba(107, 82, 61, 0.12);
+}
+
+.buttonSecondary:hover {
+  background: #ffffff;
+  border-color: rgba(107, 82, 61, 0.2);
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@media (min-width: 768px) {
+  .wrapper {
+    right: 16px;
+    bottom: 16px;
+  }
+}

@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Base Landing Template
 
-## Getting Started
+A reusable, duplication-friendly landing page starter built with Next.js App Router, TypeScript, and CSS Modules.
 
-First, run the development server:
+## Quick Start
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Where To Edit After Duplicating
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- Branding, business info, colors, contact details, navigation, and SEO: `src/data/siteConfig.ts`
+- Section copy, services, testimonials, CTA text, and footer text: `src/data/siteContent.ts`
+- WhatsApp link behavior: `src/lib/whatsapp.ts`
+- Page structure: `src/app/page.tsx`
+- Global styles: `src/app/globals.css`
+- Component-specific styles: `src/components/**/**/*.module.css`
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Replace Images
 
-## Learn More
+Swap the placeholder files in:
 
-To learn more about Next.js, take a look at the following resources:
+- `public/logo/`
+- `public/images/hero/`
+- `public/images/about/`
+- `public/images/testimonials/`
+- `public/images/og/`
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Then update the matching file paths in `src/data/siteConfig.ts` if needed.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Template Workflow
 
-## Deploy on Vercel
+1. Duplicate the project.
+2. Update `src/data/siteConfig.ts` with the new client branding, contact details, colors, and SEO.
+3. Update `src/data/siteContent.ts` with the new copy, services, testimonials, and CTA messaging.
+4. Replace placeholder assets in `public/`.
+5. If needed, connect the contact form in `src/components/sections/ContactSection.tsx` to your backend or email service.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Contact Modes
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+You can switch the contact section behavior from `src/data/siteConfig.ts`:
+
+- `"whatsapp"`
+- `"form"`
+- `"both"`
+
+## Notes
+
+- The floating WhatsApp button uses the centralized WhatsApp number and message.
+- Metadata and Open Graph defaults also come from `src/data/siteConfig.ts`.
+- The contact form is frontend-only by default and ready to be connected later.

@@ -1,0 +1,80 @@
+.card {
+  height: 100%;
+  padding: 1rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 1.15rem;
+  background:
+    radial-gradient(circle at top left, rgba(230, 216, 200, 0.28), transparent 22%),
+    linear-gradient(180deg, #ffffff, #fdfaf7);
+  box-shadow: var(--shadow-soft);
+  transition:
+    transform 0.28s ease,
+    box-shadow 0.28s ease,
+    border-color 0.28s ease;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.7rem;
+  height: 2.7rem;
+  border-radius: 0.9rem;
+  background: rgba(214, 195, 163, 0.18);
+  color: var(--color-primary);
+}
+
+.icon svg {
+  width: 1.4rem;
+  height: 1.4rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(139, 115, 85, 0.16);
+  box-shadow: 0 16px 32px rgba(30, 22, 14, 0.1);
+}
+
+.badge {
+  display: inline-flex;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(214, 195, 163, 0.18);
+  color: var(--color-primary);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+
+.title {
+  margin: 0.9rem 0 0.55rem;
+  font-size: 1.12rem;
+  color: var(--color-ink);
+}
+
+.description {
+  margin: 0 0 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  font-size: 0.95rem;
+}
+
+.points {
+  margin: 0;
+  padding-right: 1rem;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  font-size: 0.92rem;
+}

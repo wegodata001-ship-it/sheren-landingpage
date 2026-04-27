@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum ProjectSize {
+  wide
+  tall
+  standard
+}
+
+model ContactSubmission {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  phone     String?
+  message   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model SiteSettings {
+  id                        String   @id @default("default")
+  businessName              String?
+  tagline                   String?
+  phoneNumber               String?
+  whatsappNumber            String?
+  email                     String?
+  address                   String?
+  heroTitle                 String?
+  heroSubtitle              String?
+  heroImageUrl              String?
+  heroImagePath             String?
+  aboutTitle                String?
+  aboutDescription          String?
+  aboutSecondaryDescription String?
+  aboutImageUrl             String?
+  aboutImagePath            String?
+  aboutSecondaryImageUrl    String?
+  aboutSecondaryImagePath   String?
+  localizedContent          Json?
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
+}
+
+model Project {
+  id         String      @id @default(cuid())
+  title      String
+  category   String
+  imageUrl   String
+  imagePath  String
+  size       ProjectSize @default(standard)
+  orderIndex Int         @default(0)
+  createdAt  DateTime    @default(now())
+  updatedAt  DateTime    @updatedAt
+}

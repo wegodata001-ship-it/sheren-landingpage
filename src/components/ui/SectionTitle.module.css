@@ -1,0 +1,54 @@
+.wrapper {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.center {
+  text-align: center;
+}
+
+.eyebrow {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--color-primary);
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(1.85rem, 4vw, 3.2rem);
+  line-height: 1.2;
+  color: var(--color-ink);
+  text-wrap: balance;
+}
+
+.description {
+  margin: 0;
+  max-width: 38rem;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--text-secondary);
+}
+
+.center .description {
+  margin-inline: auto;
+}
+
+.light .eyebrow {
+  color: var(--color-primary);
+}
+
+.light .title {
+  color: var(--color-ink);
+}
+
+.light .description {
+  color: var(--text-secondary);
+}
+
+@media (max-width: 767px) {
+  .description {
+    max-width: 32rem;
+    font-size: 0.97rem;
+  }
+}

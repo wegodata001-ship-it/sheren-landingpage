@@ -1,0 +1,12 @@
+.section {
+.section {
+  padding: 3rem 0;
+  background:
+    radial-gradient(circle at 12% 26%, rgba(230, 216, 200, 0.3), transparent 16%),
+    radial-gradient(circle at 86% 72%, rgba(199, 169, 140, 0.18), transparent 16%),
+    linear-gradient(180deg, rgba(251, 248, 244, 0.34), rgba(239, 226, 212, 0.34));
+}
+
+.content {
+  margin-top: 2rem;
+}

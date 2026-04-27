@@ -1,0 +1,94 @@
+.wrapper {
+  position: fixed;
+  left: 16px;
+  bottom: 16px;
+  z-index: 45;
+  display: grid;
+  justify-items: start;
+  gap: 0.75rem;
+  transform: scale(0.9);
+  transform-origin: bottom left;
+}
+
+.trigger {
+  min-width: 6.7rem;
+  min-height: 3rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 999px;
+  background: #ffffff;
+  color: var(--color-ink);
+  font: inherit;
+  font-weight: 700;
+  box-shadow: 0 12px 24px rgba(30, 22, 14, 0.14);
+  cursor: pointer;
+}
+
+.panel {
+  width: min(20rem, calc(100vw - 2rem));
+  padding: 1rem;
+  border: 1px solid var(--border-soft);
+  border-radius: 1.25rem;
+  background: #ffffff;
+  box-shadow: 0 16px 32px rgba(30, 22, 14, 0.12);
+}
+
+.panelHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.9rem;
+}
+
+.panelHeader strong {
+  color: var(--color-ink);
+}
+
+.closeButton,
+.actionButton,
+.resetButton {
+  font: inherit;
+  cursor: pointer;
+}
+
+.closeButton {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+}
+
+.actions {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.actionButton,
+.resetButton {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.8rem 0.95rem;
+  border-radius: 0.95rem;
+  border: 1px solid var(--border-soft);
+  background: #fcfbf9;
+  color: var(--color-ink);
+  text-align: right;
+}
+
+.actionButtonActive {
+  border-color: rgba(139, 115, 85, 0.22);
+  background: rgba(214, 195, 163, 0.22);
+}
+
+.resetButton {
+  margin-top: 0.85rem;
+  border-color: rgba(139, 115, 85, 0.18);
+}
+
+@media (min-width: 768px) {
+  .wrapper {
+    left: 16px;
+    bottom: 16px;
+  }
+}

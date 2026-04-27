@@ -1,0 +1,68 @@
+.section {
+  padding: 3rem 0;
+  background:
+    radial-gradient(circle at 82% 20%, rgba(226, 205, 184, 0.34), transparent 18%),
+    linear-gradient(180deg, rgba(251, 248, 244, 0.4), rgba(239, 226, 212, 0.36));
+}
+
+.timeline {
+  display: grid;
+  gap: 0.9rem;
+  margin-top: 2rem;
+}
+
+.item {
+  position: relative;
+}
+
+.card {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  gap: 0.9rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  background:
+    linear-gradient(180deg, #fbf8f4 0%, #fffdfb 100%);
+  border: 1px solid var(--border-soft);
+  box-shadow: 0 18px 32px rgba(67, 47, 31, 0.08);
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.8rem;
+  background: rgba(214, 195, 163, 0.22);
+  border: 1px solid rgba(139, 115, 85, 0.12);
+  color: #ffffff;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}
+
+.copy {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.card h3 {
+  margin: 0;
+  color: var(--color-ink);
+}
+
+.card p {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  font-size: 0.95rem;
+}
+
+@media (min-width: 768px) {
+  .timeline {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+}

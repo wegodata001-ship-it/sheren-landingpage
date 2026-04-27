@@ -1,0 +1,32 @@
+.section {
+  padding: 0 0 3rem;
+  background:
+    radial-gradient(circle at 14% 28%, rgba(226, 205, 184, 0.28), transparent 15%),
+    linear-gradient(180deg, rgba(247, 241, 234, 0.18), rgba(239, 226, 212, 0.28));
+}
+
+.panel {
+  padding: 1.8rem 1.4rem;
+  border-radius: 1.25rem;
+  background:
+    radial-gradient(circle at top left, rgba(255, 255, 255, 0.55), transparent 24%),
+    linear-gradient(135deg, rgba(251, 248, 244, 0.92), rgba(230, 216, 200, 0.68));
+  border: 1px solid rgba(138, 111, 82, 0.1);
+  box-shadow: 0 20px 36px rgba(67, 47, 31, 0.1);
+  text-align: center;
+}
+
+.quote {
+  margin: 0;
+  color: var(--color-ink);
+  font-size: clamp(1.65rem, 4.2vw, 2.6rem);
+  line-height: 1.35;
+  text-wrap: balance;
+}
+
+.subtext {
+  margin: 1rem auto 0;
+  max-width: 42rem;
+  color: var(--text-secondary);
+  line-height: 1.7;
+}

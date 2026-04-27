@@ -1,0 +1,206 @@
+.page {
+  min-height: 100vh;
+  position: relative;
+  overflow: clip;
+  isolation: isolate;
+}
+
+.page::before,
+.page::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(72px);
+  z-index: 0;
+}
+
+.page::before {
+  top: 4rem;
+  left: -14rem;
+  width: 34rem;
+  height: 34rem;
+  background: rgba(226, 205, 184, 0.44);
+}
+
+.page::after {
+  top: 30rem;
+  right: -14rem;
+  width: 32rem;
+  height: 32rem;
+  background: rgba(166, 138, 106, 0.2);
+}
+
+.ambient {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ambient::before,
+.ambient::after {
+  content: "";
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  opacity: 0.65;
+}
+
+.ambient::before {
+  top: 62rem;
+  left: -18rem;
+  width: 36rem;
+  height: 36rem;
+  background: radial-gradient(circle, rgba(239, 226, 212, 0.86) 0%, rgba(239, 226, 212, 0.18) 58%, transparent 100%);
+  filter: blur(24px);
+}
+
+.ambient::after {
+  top: 146rem;
+  right: -22rem;
+  width: 42rem;
+  height: 42rem;
+  border: 28px solid rgba(199, 169, 140, 0.14);
+}
+
+.blob,
+.ring {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.8;
+}
+
+.blob {
+  filter: blur(16px);
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+}
+
+.blobOne {
+  top: 8rem;
+  right: -12rem;
+  width: 34rem;
+  height: 34rem;
+  background: radial-gradient(circle, rgba(226, 205, 184, 0.76) 0%, rgba(226, 205, 184, 0.18) 58%, transparent 100%);
+  animation-name: floatY;
+  animation-duration: 18s;
+}
+
+.blobTwo {
+  top: 54rem;
+  left: -10rem;
+  width: 26rem;
+  height: 26rem;
+  background: radial-gradient(circle, rgba(199, 169, 140, 0.42) 0%, rgba(199, 169, 140, 0.14) 62%, transparent 100%);
+  animation-name: floatX;
+  animation-duration: 22s;
+}
+
+.blobThree {
+  top: 106rem;
+  right: 4%;
+  width: 22rem;
+  height: 22rem;
+  background: radial-gradient(circle, rgba(166, 138, 106, 0.26) 0%, rgba(166, 138, 106, 0.08) 62%, transparent 100%);
+  animation-name: rotateDrift;
+  animation-duration: 24s;
+}
+
+.blobFour {
+  bottom: 14rem;
+  left: 2%;
+  width: 28rem;
+  height: 28rem;
+  background: radial-gradient(circle, rgba(239, 226, 212, 0.84) 0%, rgba(226, 205, 184, 0.2) 56%, transparent 100%);
+  animation-name: floatY;
+  animation-duration: 16s;
+  animation-direction: reverse;
+}
+
+.blobFive {
+  top: 170rem;
+  left: 14%;
+  width: 20rem;
+  height: 20rem;
+  background: radial-gradient(circle, rgba(107, 82, 61, 0.2) 0%, rgba(107, 82, 61, 0.05) 64%, transparent 100%);
+  animation-name: floatX;
+  animation-duration: 25s;
+}
+
+.ring {
+  border: 1px solid rgba(138, 111, 82, 0.2);
+}
+
+.ringOne {
+  top: 18rem;
+  left: -14rem;
+  width: 28rem;
+  height: 28rem;
+}
+
+.ringTwo {
+  top: 124rem;
+  right: -18rem;
+  width: 38rem;
+  height: 38rem;
+}
+
+@keyframes floatY {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(0, -18px, 0);
+  }
+}
+
+@keyframes floatX {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: translate3d(16px, 0, 0);
+  }
+}
+
+@keyframes rotateDrift {
+  0%,
+  100% {
+    transform: rotate(0deg) translate3d(0, 0, 0);
+  }
+
+  50% {
+    transform: rotate(6deg) translate3d(0, -12px, 0);
+  }
+}
+
+@media (max-width: 767px) {
+  .blobOne {
+    width: 22rem;
+    height: 22rem;
+    right: -8rem;
+  }
+
+  .blobTwo {
+    width: 16rem;
+    height: 16rem;
+    left: -7rem;
+  }
+
+  .blobFour,
+  .blobFive,
+  .ringTwo {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .blob {
+    animation: none;
+  }
+}

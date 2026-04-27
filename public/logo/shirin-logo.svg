@@ -1,0 +1,30 @@
+<svg width="320" height="96" viewBox="0 0 320 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="320" height="96" rx="24" fill="#202020"/>
+  <g filter="url(#shadow)">
+    <rect x="18" y="18" width="60" height="60" rx="18" fill="url(#panel)"/>
+    <path d="M36 34C41.333 33.333 45.667 33 49 33C61 33 68 39.333 68 49.5C68 58.5 61.667 64.333 53 64.333C47 64.333 42 62.333 38 58.333" stroke="url(#gold)" stroke-width="2.4" stroke-linecap="round"/>
+    <path d="M37 42.5C41.833 40.833 46.167 40 50 40C57.667 40 61.5 43.167 61.5 48.667C61.5 54.333 57.5 58 49.5 58C45.833 58 41.667 57.167 37 55.5" stroke="url(#gold)" stroke-width="2.4" stroke-linecap="round"/>
+  </g>
+  <text x="99" y="53" fill="#E8DDCF" font-family="Georgia, 'Times New Roman', serif" font-size="34" letter-spacing="10">éÙèÙß</text>
+  <text x="100" y="72" fill="#B9A58B" font-family="Arial, Helvetica, sans-serif" font-size="10" letter-spacing="3.6">ARCHITECT STUDIO</text>
+  <defs>
+    <linearGradient id="gold" x1="33" y1="31" x2="70" y2="67" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E1D1BE"/>
+      <stop offset="1" stop-color="#B89E7C"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="18" y1="18" x2="78" y2="78" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2C2C2C"/>
+      <stop offset="1" stop-color="#1A1A1A"/>
+    </linearGradient>
+    <filter id="shadow" x="8" y="12" width="80" height="76" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="2"/>
+      <feGaussianBlur stdDeviation="5"/>
+      <feComposite in2="hardAlpha" operator="out"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.796078 0 0 0 0 0.733333 0 0 0 0 0.627451 0 0 0 0.18 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow" result="shape"/>
+    </filter>
+  </defs>
+</svg>
