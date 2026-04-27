@@ -12,10 +12,13 @@ import {
 import { defaultLocalizedContent, getMergedLocalizedContent, type LocalizedSiteContent } from "@/lib/localized-content";
 import { parseGalleryPayload } from "@/lib/project-mapper";
 import type { ProjectGalleryImage, ProjectLocalizedPayload } from "@/lib/project-types";
-import type { Prisma } from "@prisma/client";
 
 import { prisma } from "@/lib/prisma";
 import { getStorageBucket, supabaseAdmin } from "@/lib/supabase-admin";
+
+type JsonPrimitive = string | number | boolean | null;
+type JsonValue = JsonPrimitive | JsonValue[] | { [key: string]: JsonValue };
+type InputJsonValue = Exclude<JsonValue, null>;
 
 function getField(formData: FormData, key: string) {
   return String(formData.get(key) || "").trim();
@@ -293,8 +296,8 @@ export async function createProjectAction(formData: FormData) {
       imagePath: uploadedCover.filePath,
       size,
       orderIndex: currentCount,
-      localizedPayload: payload as unknown as Prisma.InputJsonValue,
-      galleryPayload: (uploadedGallery.length ? uploadedGallery : []) as unknown as Prisma.InputJsonValue,
+      localizedPayload: payload as unknown as InputJsonValue,
+      galleryPayload: (uploadedGallery.length ? uploadedGallery : []) as unknown as InputJsonValue,
     },
   });
 
@@ -383,8 +386,8 @@ export async function updateProjectAction(formData: FormData) {
       size,
       imageUrl,
       imagePath,
-      localizedPayload: payload as unknown as Prisma.InputJsonValue,
-      galleryPayload: (mergedGallery.length ? mergedGallery : []) as unknown as Prisma.InputJsonValue,
+      localizedPayload: payload as unknown as InputJsonValue,
+      galleryPayload: (mergedGallery.length ? mergedGallery : []) as unknown as InputJsonValue,
     },
   });
 
