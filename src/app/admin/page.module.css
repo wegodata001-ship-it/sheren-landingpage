@@ -1,3 +1,44 @@
+.adminRoot {
+  min-height: 100vh;
+}
+
+.adminLangBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding: 0.65rem 1rem;
+  border-radius: 1rem;
+  background: rgba(251, 248, 244, 0.96);
+  border: 1px solid rgba(107, 82, 61, 0.1);
+}
+
+.adminLangBarLabel {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #6f655c;
+  margin-inline-end: 0.35rem;
+}
+
+.adminLangBtn {
+  min-height: 2.4rem;
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(107, 82, 61, 0.12);
+  background: #fffdfb;
+  color: #6f655c;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.adminLangBtn[data-active="true"] {
+  background: rgba(230, 216, 200, 0.66);
+  color: #161616;
+  border-color: rgba(138, 111, 82, 0.2);
+}
+
 .page {
   min-height: 100vh;
   padding: 1.25rem;
@@ -62,10 +103,34 @@
   transform: translateX(-2px);
 }
 
+[data-admin-dir="rtl"] .navItem:hover,
+[data-admin-dir="rtl"] .navItemActive {
+  transform: translateX(2px);
+}
+
 .sidebarFooter {
   display: grid;
   gap: 0.8rem;
   margin-top: 2rem;
+}
+
+.supportBox {
+  display: grid;
+  gap: 0.55rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  background: linear-gradient(135deg, rgba(230, 216, 200, 0.72), rgba(251, 248, 244, 0.86));
+  border: 1px solid rgba(107, 82, 61, 0.08);
+}
+
+.supportBox strong {
+  color: #161616;
+}
+
+.supportBox p {
+  margin: 0;
+  color: #6f655c;
+  line-height: 1.65;
 }
 
 .miniStat {
@@ -364,7 +429,7 @@
 .field span {
   position: absolute;
   top: 1rem;
-  right: 1rem;
+  inset-inline-end: 1rem;
   color: #8a8077;
   pointer-events: none;
   transition:
@@ -551,7 +616,7 @@
 .leadsTable td {
   padding: 1rem;
   border-bottom: 1px solid rgba(107, 82, 61, 0.08);
-  text-align: right;
+  text-align: start;
   vertical-align: top;
 }
 

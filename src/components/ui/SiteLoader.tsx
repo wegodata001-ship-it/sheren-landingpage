@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import { useLanguage } from "@/lib/i18n/use-language";
+
 import styles from "./SiteLoader.module.css";
 
 type SiteLoaderProps = {
@@ -9,6 +11,7 @@ type SiteLoaderProps = {
 };
 
 export default function SiteLoader({ businessName }: SiteLoaderProps) {
+  const { t } = useLanguage();
   const [isVisible, setIsVisible] = useState(true);
   const [isHidden, setIsHidden] = useState(false);
 
@@ -35,7 +38,7 @@ export default function SiteLoader({ businessName }: SiteLoaderProps) {
           <span />
           <span />
         </div>
-        <p>טוען את האתר...</p>
+        <p>{t.siteLoader.loading}</p>
       </div>
     </div>
   );

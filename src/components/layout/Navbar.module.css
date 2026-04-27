@@ -93,6 +93,11 @@
   gap: 0.8rem;
 }
 
+.actions {
+  display: grid;
+  gap: 0.8rem;
+}
+
 .link {
   color: var(--color-ink);
   text-decoration: none;
@@ -121,6 +126,12 @@
     flex-direction: row;
     align-items: center;
     gap: 1.15rem;
+  }
+
+  .actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.8rem;
   }
 
   .link {

@@ -1,10 +1,14 @@
+"use client";
+
 import Container from "@/components/ui/Container";
-import { siteContent } from "@/data/siteContent";
 import { siteConfig } from "@/data/siteConfig";
+import { useLanguage } from "@/lib/i18n/use-language";
 
 import styles from "./PromoBar.module.css";
 
 export default function PromoBar() {
+  const { t } = useLanguage();
+
   if (!siteConfig.sectionVisibility.promoBar) {
     return null;
   }
@@ -12,9 +16,9 @@ export default function PromoBar() {
   return (
     <div className={styles.bar}>
       <Container className={styles.inner}>
-        <p className={styles.text}>{siteContent.promoBar.text}</p>
-        <a className={styles.link} href={siteContent.promoBar.href}>
-          {siteContent.promoBar.linkLabel}
+        <p className={styles.text}>{t.promoBar.text}</p>
+        <a className={styles.link} href={t.promoBar.href}>
+          {t.promoBar.linkLabel}
         </a>
       </Container>
     </div>

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist } from "next/font/google";
+import { Cairo, Geist } from "next/font/google";
 
 import { siteConfig } from "@/data/siteConfig";
 
@@ -8,6 +8,11 @@ import "./globals.css";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+});
+
+const cairo = Cairo({
+  variable: "--font-cairo",
+  subsets: ["arabic", "latin"],
 });
 
 // Update SEO defaults from src/data/siteConfig.ts after duplicating this template.
@@ -40,7 +45,12 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="he" dir="rtl" className={geistSans.variable}>
+    <html
+      suppressHydrationWarning
+      lang="he"
+      dir="rtl"
+      className={`${geistSans.variable} ${cairo.variable}`}
+    >
       <body>{children}</body>
     </html>
   );

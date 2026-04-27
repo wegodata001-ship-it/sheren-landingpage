@@ -2,6 +2,8 @@
 
 import { useEffect, useMemo, useState } from "react";
 
+import { useLanguage } from "@/lib/i18n/use-language";
+
 import styles from "./AccessibilityButton.module.css";
 
 type AccessibilityState = {
@@ -38,7 +40,30 @@ function applyPreferences(preferences: AccessibilityState) {
   });
 }
 
+function AccessibilityMenuIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-hidden="true"
+      focusable="false"
+    >
+      <circle cx="12" cy="5.5" r="2.25" stroke="currentColor" strokeWidth="1.75" />
+      <path
+        stroke="currentColor"
+        strokeWidth="1.75"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M12 7.75v5M8.5 12.75h7M10 21l2-6 2 6"
+      />
+    </svg>
+  );
+}
+
 export default function AccessibilityButton() {
+  const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [preferences, setPreferences] = useState<AccessibilityState>(defaultState);
 
@@ -62,24 +87,25 @@ export default function AccessibilityButton() {
   }, [preferences]);
 
   const actions = useMemo(
-    () => [
-      { key: "largeText", label: "הגדלת טקסט" },
-      { key: "highContrast", label: "ניגודיות גבוהה" },
-      { key: "underlineLinks", label: "הדגשת קישורים" },
-      { key: "grayscale", label: "גווני אפור" },
-      { key: "reduceMotion", label: "עצירת אנימציות" },
-    ] as const,
-    [],
+    () =>
+      [
+        { key: "largeText" as const, label: t.accessibility.largeText },
+        { key: "highContrast" as const, label: t.accessibility.highContrast },
+        { key: "underlineLinks" as const, label: t.accessibility.underlineLinks },
+        { key: "grayscale" as const, label: t.accessibility.grayscale },
+        { key: "reduceMotion" as const, label: t.accessibility.reduceMotion },
+      ] as const,
+    [t.accessibility],
   );
 
   return (
     <div className={styles.wrapper}>
       {isOpen ? (
-        <div id="accessibility-panel" className={styles.panel} role="dialog" aria-label="אפשרויות נגישות">
+        <div id="accessibility-panel" className={styles.panel} role="dialog" aria-label={t.accessibility.panelAria}>
           <div className={styles.panelHeader}>
-            <strong>נגישות</strong>
-            <button type="button" className={styles.closeButton} onClick={() => setIsOpen(false)} aria-label="סגירת פאנל נגישות">
-              סגירה
+            <strong>{t.accessibility.panelTitle}</strong>
+            <button type="button" className={styles.closeButton} onClick={() => setIsOpen(false)} aria-label={t.accessibility.closeAria}>
+              {t.accessibility.close}
             </button>
           </div>
 
@@ -103,7 +129,7 @@ export default function AccessibilityButton() {
           </div>
 
           <button type="button" className={styles.resetButton} onClick={() => setPreferences(defaultState)}>
-            איפוס הגדרות
+            {t.accessibility.reset}
           </button>
         </div>
       ) : null}
@@ -113,10 +139,11 @@ export default function AccessibilityButton() {
         className={styles.trigger}
         aria-expanded={isOpen}
         aria-controls="accessibility-panel"
-        aria-label="פתיחת אפשרויות נגישות"
+        aria-label={t.accessibility.openPanelAria}
+        title={t.accessibility.triggerLabel}
         onClick={() => setIsOpen((current) => !current)}
       >
-        נגישות
+        <AccessibilityMenuIcon className={styles.triggerIcon} />
       </button>
     </div>
   );

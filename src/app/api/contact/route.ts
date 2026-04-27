@@ -17,10 +17,7 @@ export async function POST(request: Request) {
     const message = body.message?.trim();
 
     if (!name || !email || !message) {
-      return NextResponse.json(
-        { ok: false, message: "יש למלא שם, מייל ותיאור פרויקט." },
-        { status: 400 },
-      );
+      return NextResponse.json({ ok: false, code: "VALIDATION" as const }, { status: 400 });
     }
 
     await prisma.contactSubmission.create({
@@ -32,14 +29,8 @@ export async function POST(request: Request) {
       },
     });
 
-    return NextResponse.json({
-      ok: true,
-      message: "הפנייה נשלחה בהצלחה. נחזור אליכם בהקדם.",
-    });
+    return NextResponse.json({ ok: true, code: "SUCCESS" as const });
   } catch {
-    return NextResponse.json(
-      { ok: false, message: "משהו השתבש בשליחת הפנייה. נסו שוב בעוד רגע." },
-      { status: 500 },
-    );
+    return NextResponse.json({ ok: false, code: "SERVER" as const }, { status: 500 });
   }
 }

@@ -1,3 +1,7 @@
+"use client";
+
+import { useLanguage } from "@/lib/i18n/use-language";
+
 import styles from "./ServiceCard.module.css";
 
 type ServiceCardProps = {
@@ -49,11 +53,16 @@ function getIcon(index: number) {
 }
 
 export default function ServiceCard({ index = 0, title, description, points }: ServiceCardProps) {
+  const { t } = useLanguage();
+  const badgeNumber = String(index + 1).padStart(2, "0");
+
   return (
     <article className={styles.card}>
       <div className={styles.header}>
         <div className={styles.icon}>{getIcon(index)}</div>
-        <div className={styles.badge}>שירות {String(index + 1).padStart(2, "0")}</div>
+        <div className={styles.badge}>
+          {t.serviceCard.badgePrefix} {badgeNumber}
+        </div>
       </div>
       <h3 className={styles.title}>{title}</h3>
       <p className={styles.description}>{description}</p>

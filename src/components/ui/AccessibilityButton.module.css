@@ -11,9 +11,12 @@
 }
 
 .trigger {
-  min-width: 6.7rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 3rem;
   min-height: 3rem;
-  padding: 0.75rem 1rem;
+  padding: 0.65rem;
   border: 1px solid var(--border-soft);
   border-radius: 999px;
   background: #ffffff;
@@ -22,6 +25,13 @@
   font-weight: 700;
   box-shadow: 0 12px 24px rgba(30, 22, 14, 0.14);
   cursor: pointer;
+}
+
+.triggerIcon {
+  width: 1.4rem;
+  height: 1.4rem;
+  flex-shrink: 0;
+  color: var(--color-primary);
 }
 
 .panel {

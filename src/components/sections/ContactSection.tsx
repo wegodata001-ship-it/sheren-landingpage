@@ -6,9 +6,9 @@ import Container from "@/components/ui/Container";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { AnimatedSection, Reveal } from "@/components/ui/Reveal";
 import SectionTitle from "@/components/ui/SectionTitle";
-import { siteContent } from "@/data/siteContent";
 import { siteConfig } from "@/data/siteConfig";
 import { formatPhoneHref } from "@/lib/helpers";
+import { useLanguage } from "@/lib/i18n/use-language";
 import type { PublicSiteData } from "@/lib/site-settings";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
 
@@ -18,7 +18,14 @@ type ContactSectionProps = {
   settings?: PublicSiteData;
 };
 
+type ContactResponse = {
+  ok: boolean;
+  code?: "VALIDATION" | "SUCCESS" | "SERVER";
+  message?: string;
+};
+
 export default function ContactSection({ settings }: ContactSectionProps) {
+  const { t } = useLanguage();
   const [statusMessage, setStatusMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const showWhatsApp = siteConfig.contactMode === "whatsapp" || siteConfig.contactMode === "both";
@@ -27,10 +34,7 @@ export default function ContactSection({ settings }: ContactSectionProps) {
   const whatsappNumber = settings?.whatsappNumber || siteConfig.whatsappNumber;
   const email = settings?.email || siteConfig.email;
   const address = settings?.address || siteConfig.address;
-  const whatsappLink = buildWhatsAppLink(
-    whatsappNumber,
-    siteConfig.defaultWhatsAppMessage,
-  );
+  const whatsappLink = buildWhatsAppLink(whatsappNumber, siteConfig.defaultWhatsAppMessage);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -56,14 +60,25 @@ export default function ContactSection({ settings }: ContactSectionProps) {
         body: JSON.stringify(payload),
       });
 
-      const data = (await response.json()) as { ok: boolean; message: string };
-      setStatusMessage(data.message);
+      const data = (await response.json()) as ContactResponse;
+
+      if (data.code === "VALIDATION") {
+        setStatusMessage(t.contact.api.validation);
+      } else if (data.code === "SUCCESS") {
+        setStatusMessage(t.contact.api.success);
+      } else if (data.code === "SERVER") {
+        setStatusMessage(t.contact.api.server);
+      } else if (data.message) {
+        setStatusMessage(data.message);
+      } else {
+        setStatusMessage(response.ok ? t.contact.api.success : t.contact.api.server);
+      }
 
       if (response.ok) {
         form.reset();
       }
     } catch {
-      setStatusMessage("משהו השתבש בשליחת הפנייה. נסו שוב בעוד רגע.");
+      setStatusMessage(t.contact.api.network);
     } finally {
       setIsSubmitting(false);
     }
@@ -73,17 +88,13 @@ export default function ContactSection({ settings }: ContactSectionProps) {
     <AnimatedSection id="contact" className={styles.section}>
       <Container>
         <Reveal>
-          <SectionTitle
-            eyebrow="Contact"
-            title={siteContent.contact.title}
-            description={siteContent.contact.description}
-          />
+          <SectionTitle eyebrow={t.contact.eyebrow} title={t.contact.title} description={t.contact.description} />
         </Reveal>
 
         <div className={styles.grid}>
           <Reveal className={styles.infoPanel}>
             <div className={styles.infoCard}>
-              <h3>טלפון או מייל</h3>
+              <h3>{t.contact.infoTitle}</h3>
               <a href={formatPhoneHref(phoneNumber)}>{phoneNumber}</a>
               <a href={`mailto:${email}`}>{email}</a>
               <p>{address}</p>
@@ -91,10 +102,10 @@ export default function ContactSection({ settings }: ContactSectionProps) {
 
             {showWhatsApp ? (
               <div className={styles.infoCard}>
-                <h3>{siteContent.contact.whatsappTitle}</h3>
-                <p>{siteContent.contact.whatsappDescription}</p>
+                <h3>{t.contact.whatsappTitle}</h3>
+                <p>{t.contact.whatsappDescription}</p>
                 <PrimaryButton href={whatsappLink} target="_blank" rel="noreferrer">
-                  לפתיחת שיחה
+                  {t.cta.secondaryButtonText}
                 </PrimaryButton>
               </div>
             ) : null}
@@ -103,28 +114,28 @@ export default function ContactSection({ settings }: ContactSectionProps) {
           {showForm ? (
             <Reveal className={styles.formCard} delay={0.12} x={24}>
               <div className={styles.formIntro}>
-                <h3>{siteContent.contact.formTitle}</h3>
-                <p>{siteContent.contact.formDescription}</p>
+                <h3>{t.contact.formTitle}</h3>
+                <p>{t.contact.formDescription}</p>
               </div>
               <form className={styles.form} onSubmit={handleSubmit}>
                 <label>
-                  שם מלא
-                  <input type="text" name="name" placeholder="איך קוראים לכם?" required />
+                  {t.contact.labels.name}
+                  <input type="text" name="name" placeholder={t.contact.placeholders.name} required />
                 </label>
                 <label>
-                  כתובת מייל
-                  <input type="email" name="email" placeholder="name@example.com" required />
+                  {t.contact.labels.email}
+                  <input type="email" name="email" placeholder={t.contact.placeholders.email} required />
                 </label>
                 <label>
-                  טלפון
-                  <input type="tel" name="phone" placeholder="לא חובה, אבל מומלץ" />
+                  {t.contact.labels.phone}
+                  <input type="tel" name="phone" placeholder={t.contact.placeholders.phone} />
                 </label>
                 <label>
-                  ספרו על הפרויקט
-                  <textarea name="message" placeholder="מה אתם מתכננים? בית פרטי, שיפוץ, רישוי או עיצוב?" rows={5} required />
+                  {t.contact.labels.message}
+                  <textarea name="message" placeholder={t.contact.placeholders.message} rows={5} required />
                 </label>
                 <button type="submit" className={styles.submitButton}>
-                  {isSubmitting ? "שולחים..." : "שליחת פנייה"}
+                  {isSubmitting ? t.contact.labels.submitting : t.contact.labels.submit}
                 </button>
                 {statusMessage ? <p className={styles.status}>{statusMessage}</p> : null}
               </form>

@@ -1,18 +1,17 @@
 import { unstable_noStore as noStore } from "next/cache";
+import type { Project } from "@prisma/client";
 
 import { siteContent, type ProjectItem } from "@/data/siteContent";
+import { getMergedLocalizedContent } from "@/lib/localized-content";
+import { mapProjectToPublic } from "@/lib/project-mapper";
+import type { PublicProject } from "@/lib/project-types";
 
 import { prisma } from "./prisma";
 
-export type PublicProject = {
-  id: string;
-  title: string;
-  category: string;
-  imageUrl: string;
-  size: ProjectItem["size"];
-};
+export type { PublicProject } from "@/lib/project-types";
+export { pickProjectLang } from "@/lib/project-types";
 
-export async function ensureProjectsSeeded() {
+export async function ensureProjectsSeeded(): Promise<Project[]> {
   const projects = await prisma.project.findMany({
     orderBy: [{ orderIndex: "asc" }, { createdAt: "asc" }],
   });
@@ -40,13 +39,12 @@ export async function ensureProjectsSeeded() {
 export async function getPublicProjects(): Promise<PublicProject[]> {
   noStore();
 
-  const projects = await ensureProjectsSeeded();
+  const [settings, projects] = await Promise.all([
+    prisma.siteSettings.findUnique({ where: { id: "default" } }),
+    ensureProjectsSeeded(),
+  ]);
 
-  return projects.map((project) => ({
-    id: project.id,
-    title: project.title,
-    category: project.category,
-    imageUrl: project.imageUrl,
-    size: project.size as ProjectItem["size"],
-  }));
+  const localized = getMergedLocalizedContent(settings?.localizedContent);
+
+  return projects.map((project, index) => mapProjectToPublic(project, index, localized));
 }

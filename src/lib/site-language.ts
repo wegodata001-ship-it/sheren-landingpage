@@ -12,7 +12,3 @@ export async function getCurrentSiteLanguage(): Promise<SupportedLanguage> {
   const cookieStore = await cookies();
   return normalizeLanguage(cookieStore.get(SITE_LANGUAGE_COOKIE)?.value);
 }
-
-export function getOtherLanguage(language: SupportedLanguage): SupportedLanguage {
-  return language === "he" ? "ar" : "he";
-}

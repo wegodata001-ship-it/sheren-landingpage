@@ -5,9 +5,11 @@ import { useEffect, useState } from "react";
 import Container from "@/components/ui/Container";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import { siteConfig } from "@/data/siteConfig";
+import { useLanguage } from "@/lib/i18n/use-language";
 import type { PublicSiteData } from "@/lib/site-settings";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
 
+import LanguageSwitcher from "./LanguageSwitcher";
 import styles from "./Navbar.module.css";
 
 type NavbarProps = {
@@ -15,15 +17,14 @@ type NavbarProps = {
 };
 
 export default function Navbar({ settings }: NavbarProps) {
+  const { t, locale } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const businessName = settings?.businessName || siteConfig.businessName;
   const tagline = settings?.tagline || siteConfig.tagline;
   const whatsappNumber = settings?.whatsappNumber || siteConfig.whatsappNumber;
-  const whatsappLink = buildWhatsAppLink(
-    whatsappNumber,
-    siteConfig.defaultWhatsAppMessage,
-  );
+  const whatsappLink = buildWhatsAppLink(whatsappNumber, siteConfig.defaultWhatsAppMessage);
+  const skipLabel = t.navbar.skipToHeroAria.replace("{{name}}", businessName);
 
   useEffect(() => {
     const closeMenu = () => setIsOpen(false);
@@ -49,7 +50,7 @@ export default function Navbar({ settings }: NavbarProps) {
   return (
     <header className={[styles.header, isScrolled ? styles.scrolled : ""].filter(Boolean).join(" ")}>
       <Container className={styles.inner}>
-        <a className={styles.brand} href="#hero" aria-label={`מעבר לראש הדף של ${businessName}`}>
+        <a className={styles.brand} href="#hero" aria-label={skipLabel}>
           <div>
             <strong>{businessName}</strong>
             <span>{tagline}</span>
@@ -60,7 +61,7 @@ export default function Navbar({ settings }: NavbarProps) {
           type="button"
           className={styles.menuButton}
           aria-expanded={isOpen}
-          aria-label="פתיחת תפריט"
+          aria-label={t.navbar.menuToggleAria}
           onClick={() => setIsOpen((current) => !current)}
         >
           <span />
@@ -70,15 +71,23 @@ export default function Navbar({ settings }: NavbarProps) {
 
         <div className={[styles.menu, isOpen ? styles.open : ""].filter(Boolean).join(" ")}>
           <nav className={styles.nav}>
-            {siteConfig.navigation.map((item) => (
+            {t.navigation.map((item) => (
               <a key={item.href} className={styles.link} href={item.href} onClick={() => setIsOpen(false)}>
                 {item.label}
               </a>
             ))}
           </nav>
-          <PrimaryButton href={whatsappLink} target="_blank" rel="noreferrer">
-            לתיאום שיחה
-          </PrimaryButton>
+          <div className={styles.actions}>
+            <LanguageSwitcher
+              currentLanguage={locale}
+              nativeHebrewLabel={t.languages.nativeHebrew}
+              nativeArabicLabel={t.languages.nativeArabic}
+              ariaLabel={t.navbar.languageSwitcherAria}
+            />
+            <PrimaryButton href={whatsappLink} target="_blank" rel="noreferrer">
+              {t.hero.primaryButtonText}
+            </PrimaryButton>
+          </div>
         </div>
       </Container>
     </header>

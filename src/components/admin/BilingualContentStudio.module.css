@@ -1,0 +1,296 @@
+.studio {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.editorPane,
+.sidePane {
+  display: grid;
+  gap: 1rem;
+}
+
+.editorPane {
+  padding: 1.5rem;
+  border-radius: 1.6rem;
+  background: rgba(251, 248, 244, 0.98);
+  border: 1px solid rgba(107, 82, 61, 0.1);
+  box-shadow: 0 18px 36px rgba(67, 47, 31, 0.08);
+}
+
+.topBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.kicker {
+  display: inline-flex;
+  padding: 0.45rem 0.8rem;
+  border-radius: 999px;
+  background: rgba(230, 216, 200, 0.58);
+  color: #8a6f52;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.topBar h2 {
+  margin: 0.8rem 0 0.5rem;
+  color: #161616;
+}
+
+.topBar p {
+  margin: 0;
+  color: #6f655c;
+}
+
+.languagePanel {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.languageBadge {
+  display: inline-flex;
+  padding: 0.65rem 0.9rem;
+  border-radius: 999px;
+  background: #fffdfb;
+  border: 1px solid rgba(107, 82, 61, 0.08);
+  color: #5f564d;
+  font-weight: 600;
+}
+
+.languageTabs,
+.sectionTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.languageTab,
+.sectionTab {
+  min-height: 2.8rem;
+  padding: 0.7rem 1rem;
+  border: 1px solid rgba(107, 82, 61, 0.08);
+  border-radius: 999px;
+  background: #fffdfb;
+  color: #6f655c;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.languageTabActive,
+.sectionTabActive {
+  background: rgba(230, 216, 200, 0.66);
+  color: #161616;
+  border-color: rgba(138, 111, 82, 0.16);
+}
+
+.fieldGrid {
+  display: grid;
+  gap: 1rem;
+}
+
+.dualField {
+  display: grid;
+  gap: 0.55rem;
+}
+
+.dualFieldLabel {
+  color: #161616;
+  font-weight: 700;
+}
+
+.dualFieldRow {
+  display: grid;
+  gap: 0.85rem;
+}
+
+@media (min-width: 720px) {
+  .dualFieldRow {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.subField {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.subFieldLabel {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #7b7067;
+}
+
+.subField input,
+.subField textarea {
+  width: 100%;
+  padding: 0.95rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(107, 82, 61, 0.12);
+  background: #fffdfb;
+  color: #161616;
+  font: inherit;
+  text-align: start;
+}
+
+.subField textarea {
+  min-height: 6.5rem;
+  resize: vertical;
+}
+
+.subField input:focus,
+.subField textarea:focus {
+  outline: 2px solid rgba(230, 216, 200, 0.46);
+  border-color: #8a6f52;
+}
+
+.sideCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.sideCardHeader strong {
+  color: #161616;
+}
+
+.groupCard,
+.sideCard,
+.confirmCard,
+.previewCard {
+  padding: 1rem;
+  border-radius: 1.2rem;
+  background: #fffdfb;
+  border: 1px solid rgba(107, 82, 61, 0.08);
+  box-shadow: 0 12px 24px rgba(67, 47, 31, 0.06);
+}
+
+.groupCard {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.groupCard strong,
+.sideCard strong {
+  color: #161616;
+}
+
+.bottomActions,
+.confirmActions,
+.translationActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+}
+
+.primaryAction,
+.secondaryAction,
+.ghostAction,
+.primaryMini,
+.secondaryMini {
+  min-height: 3rem;
+  padding: 0.8rem 1rem;
+  border-radius: 999px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.primaryAction,
+.primaryMini {
+  border: 0;
+  background: linear-gradient(135deg, #9a7d60 0%, #cbb59d 100%);
+  color: #ffffff;
+}
+
+.secondaryAction,
+.secondaryMini,
+.ghostAction {
+  border: 1px solid rgba(107, 82, 61, 0.12);
+  background: #fffdfb;
+  color: #161616;
+}
+
+.statusMessage,
+.translationNotice,
+.confirmCard p,
+.previewCard p {
+  margin: 0;
+  color: #6f655c;
+  line-height: 1.7;
+}
+
+.progressRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.75rem;
+  color: #5f564d;
+}
+
+.progressBar {
+  overflow: hidden;
+  height: 0.65rem;
+  margin-top: 0.45rem;
+  border-radius: 999px;
+  background: rgba(230, 216, 200, 0.38);
+}
+
+.progressBar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #8a6f52 0%, #d6c3a3 100%);
+}
+
+.previewCard {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.previewEyebrow {
+  color: #8a6f52;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.previewCard h3 {
+  margin: 0;
+  color: #161616;
+}
+
+.previewButton {
+  width: fit-content;
+  min-height: 2.7rem;
+  padding: 0.65rem 1rem;
+  border: 0;
+  border-radius: 999px;
+  background: #8a6f52;
+  color: #ffffff;
+  font: inherit;
+  font-weight: 700;
+}
+
+.hiddenInput {
+  display: none;
+}
+
+@media (min-width: 1100px) {
+  .studio {
+    grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.8fr);
+    align-items: start;
+  }
+
+  .sidePane {
+    position: sticky;
+    top: 1rem;
+  }
+}

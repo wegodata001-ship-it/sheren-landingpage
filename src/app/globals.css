@@ -43,7 +43,28 @@ body {
   color: var(--text-primary);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
-  text-align: right;
+  text-align: start;
+}
+
+html[dir="rtl"] {
+  direction: rtl;
+}
+
+html[dir="ltr"] {
+  direction: ltr;
+}
+
+/* Admin shell: explicit direction on the wrapper so layout flips without relying on mixed public `html` state. */
+[data-admin-root][dir="rtl"] {
+  direction: rtl;
+}
+
+[data-admin-root][dir="ltr"] {
+  direction: ltr;
+}
+
+[data-language="ar"] {
+  font-family: var(--font-cairo), Arial, Helvetica, sans-serif;
 }
 
 a,

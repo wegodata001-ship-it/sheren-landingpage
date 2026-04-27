@@ -9,6 +9,11 @@ import {
   isAdminAuthenticated,
   validateAdminCredentials,
 } from "@/lib/admin-auth";
+import { defaultLocalizedContent, getMergedLocalizedContent, type LocalizedSiteContent } from "@/lib/localized-content";
+import { parseGalleryPayload } from "@/lib/project-mapper";
+import type { ProjectGalleryImage, ProjectLocalizedPayload } from "@/lib/project-types";
+import type { Prisma } from "@prisma/client";
+
 import { prisma } from "@/lib/prisma";
 import { getStorageBucket, supabaseAdmin } from "@/lib/supabase-admin";
 
@@ -55,6 +60,64 @@ async function removeProjectImage(path: string) {
 
   const bucket = getStorageBucket();
   await supabaseAdmin.storage.from(bucket).remove([path]);
+}
+
+async function removeStoragePaths(paths: string[]) {
+  const unique = [...new Set(paths.filter(Boolean))];
+  await Promise.all(unique.map((path) => removeProjectImage(path)));
+}
+
+function readLocalizedPayloadJson(raw: string): ProjectLocalizedPayload {
+  const parsed = JSON.parse(raw || "{}") as ProjectLocalizedPayload;
+  if (!parsed?.title?.he?.trim() || !parsed?.category?.he?.trim()) {
+    throw new Error("Invalid localized payload");
+  }
+  return {
+    title: { he: String(parsed.title.he), ar: String(parsed.title.ar ?? "") },
+    shortDescription: {
+      he: String(parsed.shortDescription?.he ?? ""),
+      ar: String(parsed.shortDescription?.ar ?? ""),
+    },
+    fullDescription: {
+      he: String(parsed.fullDescription?.he ?? ""),
+      ar: String(parsed.fullDescription?.ar ?? ""),
+    },
+    category: { he: String(parsed.category.he), ar: String(parsed.category.ar ?? "") },
+    location: {
+      he: String(parsed.location?.he ?? ""),
+      ar: String(parsed.location?.ar ?? ""),
+    },
+    year: String(parsed.year ?? ""),
+    style: {
+      he: String(parsed.style?.he ?? ""),
+      ar: String(parsed.style?.ar ?? ""),
+    },
+  };
+}
+
+function collectGalleryNewFiles(formData: FormData): File[] {
+  const pairs: { i: number; file: File }[] = [];
+
+  for (const [key, value] of formData.entries()) {
+    if (!key.startsWith("galleryNew_")) {
+      continue;
+    }
+
+    if (!(value instanceof File) || value.size === 0) {
+      continue;
+    }
+
+    const index = Number(key.slice("galleryNew_".length));
+
+    if (!Number.isFinite(index)) {
+      continue;
+    }
+
+    pairs.push({ i: index, file: value });
+  }
+
+  pairs.sort((a, b) => a.i - b.i);
+  return pairs.map((item) => item.file);
 }
 
 export async function loginAction(formData: FormData) {
@@ -157,6 +220,7 @@ export async function saveSiteSettingsAction(formData: FormData) {
       aboutImagePath,
       aboutSecondaryImageUrl,
       aboutSecondaryImagePath,
+      localizedContent: existingSettings?.localizedContent || defaultLocalizedContent,
     },
   });
 
@@ -165,31 +229,72 @@ export async function saveSiteSettingsAction(formData: FormData) {
   redirect("/admin?saved=1");
 }
 
+export async function saveLocalizedContentAction(localizedContent: LocalizedSiteContent) {
+  if (!(await isAdminAuthenticated())) {
+    redirect("/admin/login");
+  }
+
+  await prisma.siteSettings.upsert({
+    where: { id: "default" },
+    update: {
+      localizedContent,
+    },
+    create: {
+      id: "default",
+      localizedContent,
+    },
+  });
+
+  revalidatePath("/");
+  revalidatePath("/admin");
+
+  return {
+    ok: true,
+    localizedContent: getMergedLocalizedContent(localizedContent),
+  };
+}
+
 export async function createProjectAction(formData: FormData) {
   if (!(await isAdminAuthenticated())) {
     redirect("/admin/login");
   }
 
-  const title = getField(formData, "title");
-  const category = getField(formData, "category");
   const size = normalizeProjectSize(getField(formData, "size"));
-  const image = formData.get("image");
+  const cover = formData.get("coverImage");
+  const payloadRaw = String(formData.get("localizedPayload") || "");
 
-  if (!title || !category || !isFileLike(image)) {
+  if (!isFileLike(cover) || !payloadRaw.trim()) {
+    redirect("/admin?saved=project-error");
+  }
+
+  let payload: ProjectLocalizedPayload;
+
+  try {
+    payload = readLocalizedPayloadJson(payloadRaw);
+  } catch {
     redirect("/admin?saved=project-error");
   }
 
   const currentCount = await prisma.project.count();
-  const uploaded = await uploadStorageImage(image, "projects");
+  const uploadedCover = await uploadStorageImage(cover, "projects");
+  const newFiles = collectGalleryNewFiles(formData);
+  const uploadedGallery: ProjectGalleryImage[] = [];
+
+  for (const file of newFiles) {
+    const up = await uploadStorageImage(file, "projects");
+    uploadedGallery.push({ url: up.publicUrl, path: up.filePath });
+  }
 
   await prisma.project.create({
     data: {
-      title,
-      category,
-      imageUrl: uploaded.publicUrl,
-      imagePath: uploaded.filePath,
+      title: payload.title.he,
+      category: payload.category.he,
+      imageUrl: uploadedCover.publicUrl,
+      imagePath: uploadedCover.filePath,
       size,
       orderIndex: currentCount,
+      localizedPayload: payload as unknown as Prisma.InputJsonValue,
+      galleryPayload: (uploadedGallery.length ? uploadedGallery : []) as unknown as Prisma.InputJsonValue,
     },
   });
 
@@ -204,11 +309,12 @@ export async function updateProjectAction(formData: FormData) {
   }
 
   const id = getField(formData, "id");
-  const title = getField(formData, "title");
-  const category = getField(formData, "category");
   const size = normalizeProjectSize(getField(formData, "size"));
+  const payloadRaw = String(formData.get("localizedPayload") || "");
+  const galleryExistingRaw = String(formData.get("galleryExistingJson") || "[]");
+  const removedPathsRaw = String(formData.get("removedPaths") || "");
 
-  if (!id || !title || !category) {
+  if (!id || !payloadRaw.trim()) {
     redirect("/admin?saved=project-error");
   }
 
@@ -220,25 +326,65 @@ export async function updateProjectAction(formData: FormData) {
     redirect("/admin?saved=project-error");
   }
 
-  const image = formData.get("image");
+  let payload: ProjectLocalizedPayload;
+
+  try {
+    payload = readLocalizedPayloadJson(payloadRaw);
+  } catch {
+    redirect("/admin?saved=project-error");
+  }
+
+  let galleryExisting: ProjectGalleryImage[] = [];
+
+  try {
+    galleryExisting = JSON.parse(galleryExistingRaw) as ProjectGalleryImage[];
+  } catch {
+    galleryExisting = parseGalleryPayload(existingProject.galleryPayload);
+  }
+
+  const removedPaths = removedPathsRaw
+    .split(",")
+    .map((path) => path.trim())
+    .filter(Boolean);
+
+  await removeStoragePaths(removedPaths);
+
+  const newFiles = collectGalleryNewFiles(formData);
+  const uploadedGallery: ProjectGalleryImage[] = [];
+
+  for (const file of newFiles) {
+    const up = await uploadStorageImage(file, "projects");
+    uploadedGallery.push({ url: up.publicUrl, path: up.filePath });
+  }
+
+  const mergedGallery = [...galleryExisting, ...uploadedGallery];
+
+  const cover = formData.get("coverImage");
+  const coverUrlOverride = getField(formData, "coverUrlOverride");
+  const coverPathOverride = getField(formData, "coverPathOverride");
   let imageUrl = existingProject.imageUrl;
   let imagePath = existingProject.imagePath;
 
-  if (isFileLike(image)) {
-    const uploaded = await uploadStorageImage(image, "projects");
+  if (isFileLike(cover)) {
+    const uploadedCover = await uploadStorageImage(cover, "projects");
     await removeProjectImage(existingProject.imagePath);
-    imageUrl = uploaded.publicUrl;
-    imagePath = uploaded.filePath;
+    imageUrl = uploadedCover.publicUrl;
+    imagePath = uploadedCover.filePath;
+  } else if (coverUrlOverride && coverPathOverride) {
+    imageUrl = coverUrlOverride;
+    imagePath = coverPathOverride;
   }
 
   await prisma.project.update({
     where: { id },
     data: {
-      title,
-      category,
+      title: payload.title.he,
+      category: payload.category.he,
       size,
       imageUrl,
       imagePath,
+      localizedPayload: payload as unknown as Prisma.InputJsonValue,
+      galleryPayload: (mergedGallery.length ? mergedGallery : []) as unknown as Prisma.InputJsonValue,
     },
   });
 
@@ -266,7 +412,10 @@ export async function deleteProjectAction(formData: FormData) {
     redirect("/admin?saved=project-error");
   }
 
-  await removeProjectImage(existingProject.imagePath);
+  const gallery = parseGalleryPayload(existingProject.galleryPayload);
+  const paths = [existingProject.imagePath, ...gallery.map((item) => item.path)].filter(Boolean);
+  await removeStoragePaths(paths);
+
   await prisma.project.delete({
     where: { id },
   });

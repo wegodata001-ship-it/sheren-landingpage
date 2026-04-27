@@ -1,9 +1,7 @@
 import { unstable_noStore as noStore } from "next/cache";
 
-import { siteContent } from "@/data/siteContent";
 import { siteConfig } from "@/data/siteConfig";
 import {
-  defaultLocalizedContent,
   getLocalizedArray,
   getLocalizedText,
   getMergedLocalizedContent,
@@ -30,6 +28,9 @@ export type LocalizedPublicContent = {
     subtitle: string;
     primaryButtonText: string;
     secondaryButtonText: string;
+    mediaBadge: string;
+    mediaNoteLine: string;
+    mediaNoteLead: string;
     stats: Array<{ value: string; label: string }>;
   };
   about: {
@@ -72,6 +73,14 @@ export type LocalizedPublicContent = {
     ctaLabel: string;
     previousLabel: string;
     nextLabel: string;
+    viewProject: string;
+    modalCloseAria: string;
+    modalDetailsLabel: string;
+    modalGalleryAria: string;
+    modalWhatsappCta: string;
+    modalLocation: string;
+    modalYear: string;
+    modalStyle: string;
   };
   cta: {
     eyebrow: string;
@@ -95,6 +104,7 @@ export type LocalizedPublicContent = {
       phone: string;
       message: string;
       submit: string;
+      submitting: string;
     };
     placeholders: {
       name: string;
@@ -103,6 +113,12 @@ export type LocalizedPublicContent = {
       message: string;
     };
     infoTitle: string;
+    api: {
+      validation: string;
+      success: string;
+      server: string;
+      network: string;
+    };
   };
   quote: {
     text: string;
@@ -112,6 +128,8 @@ export type LocalizedPublicContent = {
     text: string;
     rights: string;
     bottomTagline: string;
+    socialTiktok: string;
+    socialLinkedin: string;
   };
   seo: {
     pageTitle: string;
@@ -120,6 +138,44 @@ export type LocalizedPublicContent = {
     openGraphTitle: string;
     openGraphDescription: string;
   };
+  serviceCard: {
+    badgePrefix: string;
+  };
+  social: {
+    whatsapp: string;
+    instagram: string;
+    facebook: string;
+  };
+  accessibility: {
+    panelTitle: string;
+    panelAria: string;
+    close: string;
+    closeAria: string;
+    openPanelAria: string;
+    triggerLabel: string;
+    reset: string;
+    largeText: string;
+    highContrast: string;
+    underlineLinks: string;
+    grayscale: string;
+    reduceMotion: string;
+  };
+  siteLoader: {
+    loading: string;
+  };
+  navbar: {
+    skipToHeroAria: string;
+    menuToggleAria: string;
+    languageSwitcherAria: string;
+  };
+  languages: {
+    nativeHebrew: string;
+    nativeArabic: string;
+  };
+  portfolioItems: Array<{
+    title: string;
+    category: string;
+  }>;
 };
 
 export type PublicSiteData = {
@@ -130,6 +186,7 @@ export type PublicSiteData = {
   whatsappNumber: string;
   email: string;
   address: string;
+  ogImage: string;
   heroTitle: string;
   heroSubtitle: string;
   heroImage: string;
@@ -164,8 +221,11 @@ function localizeContent(
       subtitle: getLocalizedText(content.hero.subtitle, language, fallbackLanguage),
       primaryButtonText: getLocalizedText(content.hero.primaryButtonText, language, fallbackLanguage),
       secondaryButtonText: getLocalizedText(content.hero.secondaryButtonText, language, fallbackLanguage),
+      mediaBadge: getLocalizedText(content.hero.mediaBadge, language, fallbackLanguage),
+      mediaNoteLine: getLocalizedText(content.hero.mediaNoteLine, language, fallbackLanguage),
+      mediaNoteLead: getLocalizedText(content.hero.mediaNoteLead, language, fallbackLanguage),
       stats: content.hero.stats.map((item) => ({
-        value: item.value,
+        value: getLocalizedText(item.value, language, fallbackLanguage),
         label: getLocalizedText(item.label, language, fallbackLanguage),
       })),
     },
@@ -209,6 +269,14 @@ function localizeContent(
       ctaLabel: getLocalizedText(content.projectsSection.ctaLabel, language, fallbackLanguage),
       previousLabel: getLocalizedText(content.projectsSection.previousLabel, language, fallbackLanguage),
       nextLabel: getLocalizedText(content.projectsSection.nextLabel, language, fallbackLanguage),
+      viewProject: getLocalizedText(content.projectsSection.viewProject, language, fallbackLanguage),
+      modalCloseAria: getLocalizedText(content.projectsSection.modalCloseAria, language, fallbackLanguage),
+      modalDetailsLabel: getLocalizedText(content.projectsSection.modalDetailsLabel, language, fallbackLanguage),
+      modalGalleryAria: getLocalizedText(content.projectsSection.modalGalleryAria, language, fallbackLanguage),
+      modalWhatsappCta: getLocalizedText(content.projectsSection.modalWhatsappCta, language, fallbackLanguage),
+      modalLocation: getLocalizedText(content.projectsSection.modalLocation, language, fallbackLanguage),
+      modalYear: getLocalizedText(content.projectsSection.modalYear, language, fallbackLanguage),
+      modalStyle: getLocalizedText(content.projectsSection.modalStyle, language, fallbackLanguage),
     },
     cta: {
       eyebrow: getLocalizedText(content.cta.eyebrow, language, fallbackLanguage),
@@ -232,6 +300,7 @@ function localizeContent(
         phone: getLocalizedText(content.contact.labels.phone, language, fallbackLanguage),
         message: getLocalizedText(content.contact.labels.message, language, fallbackLanguage),
         submit: getLocalizedText(content.contact.labels.submit, language, fallbackLanguage),
+        submitting: getLocalizedText(content.contact.labels.submitting, language, fallbackLanguage),
       },
       placeholders: {
         name: getLocalizedText(content.contact.placeholders.name, language, fallbackLanguage),
@@ -240,6 +309,12 @@ function localizeContent(
         message: getLocalizedText(content.contact.placeholders.message, language, fallbackLanguage),
       },
       infoTitle: getLocalizedText(content.contact.infoTitle, language, fallbackLanguage),
+      api: {
+        validation: getLocalizedText(content.contact.api.validation, language, fallbackLanguage),
+        success: getLocalizedText(content.contact.api.success, language, fallbackLanguage),
+        server: getLocalizedText(content.contact.api.server, language, fallbackLanguage),
+        network: getLocalizedText(content.contact.api.network, language, fallbackLanguage),
+      },
     },
     quote: {
       text: getLocalizedText(content.quote.text, language, fallbackLanguage),
@@ -249,6 +324,8 @@ function localizeContent(
       text: getLocalizedText(content.footer.text, language, fallbackLanguage),
       rights: getLocalizedText(content.footer.rights, language, fallbackLanguage),
       bottomTagline: getLocalizedText(content.footer.bottomTagline, language, fallbackLanguage),
+      socialTiktok: getLocalizedText(content.footer.socialTiktok, language, fallbackLanguage),
+      socialLinkedin: getLocalizedText(content.footer.socialLinkedin, language, fallbackLanguage),
     },
     seo: {
       pageTitle: getLocalizedText(content.seo.pageTitle, language, fallbackLanguage),
@@ -257,6 +334,44 @@ function localizeContent(
       openGraphTitle: getLocalizedText(content.seo.openGraphTitle, language, fallbackLanguage),
       openGraphDescription: getLocalizedText(content.seo.openGraphDescription, language, fallbackLanguage),
     },
+    serviceCard: {
+      badgePrefix: getLocalizedText(content.serviceCard.badgePrefix, language, fallbackLanguage),
+    },
+    social: {
+      whatsapp: getLocalizedText(content.social.whatsapp, language, fallbackLanguage),
+      instagram: getLocalizedText(content.social.instagram, language, fallbackLanguage),
+      facebook: getLocalizedText(content.social.facebook, language, fallbackLanguage),
+    },
+    accessibility: {
+      panelTitle: getLocalizedText(content.accessibility.panelTitle, language, fallbackLanguage),
+      panelAria: getLocalizedText(content.accessibility.panelAria, language, fallbackLanguage),
+      close: getLocalizedText(content.accessibility.close, language, fallbackLanguage),
+      closeAria: getLocalizedText(content.accessibility.closeAria, language, fallbackLanguage),
+      openPanelAria: getLocalizedText(content.accessibility.openPanelAria, language, fallbackLanguage),
+      triggerLabel: getLocalizedText(content.accessibility.triggerLabel, language, fallbackLanguage),
+      reset: getLocalizedText(content.accessibility.reset, language, fallbackLanguage),
+      largeText: getLocalizedText(content.accessibility.largeText, language, fallbackLanguage),
+      highContrast: getLocalizedText(content.accessibility.highContrast, language, fallbackLanguage),
+      underlineLinks: getLocalizedText(content.accessibility.underlineLinks, language, fallbackLanguage),
+      grayscale: getLocalizedText(content.accessibility.grayscale, language, fallbackLanguage),
+      reduceMotion: getLocalizedText(content.accessibility.reduceMotion, language, fallbackLanguage),
+    },
+    siteLoader: {
+      loading: getLocalizedText(content.siteLoader.loading, language, fallbackLanguage),
+    },
+    navbar: {
+      skipToHeroAria: getLocalizedText(content.navbar.skipToHeroAria, language, fallbackLanguage),
+      menuToggleAria: getLocalizedText(content.navbar.menuToggleAria, language, fallbackLanguage),
+      languageSwitcherAria: getLocalizedText(content.navbar.languageSwitcherAria, language, fallbackLanguage),
+    },
+    languages: {
+      nativeHebrew: getLocalizedText(content.languages.nativeHebrew, language, fallbackLanguage),
+      nativeArabic: getLocalizedText(content.languages.nativeArabic, language, fallbackLanguage),
+    },
+    portfolioItems: content.portfolioItems.map((item) => ({
+      title: getLocalizedText(item.title, language, fallbackLanguage),
+      category: getLocalizedText(item.category, language, fallbackLanguage),
+    })),
   };
 }
 
@@ -266,7 +381,7 @@ export async function getPublicSiteData(language: SupportedLanguage = "he"): Pro
   const settings = await prisma.siteSettings.findUnique({
     where: { id: "default" },
   });
-  const localizedContent = getMergedLocalizedContent(settings?.localizedContent ?? defaultLocalizedContent);
+  const localizedContent = getMergedLocalizedContent(settings?.localizedContent);
   const content = localizeContent(localizedContent, language, language === "he" ? "ar" : "he");
 
   return {
@@ -277,13 +392,22 @@ export async function getPublicSiteData(language: SupportedLanguage = "he"): Pro
     whatsappNumber: settings?.whatsappNumber || siteConfig.whatsappNumber,
     email: settings?.email || siteConfig.email,
     address: settings?.address || siteConfig.address,
-    heroTitle: settings?.heroTitle || content.hero.title || siteContent.hero.title,
-    heroSubtitle: settings?.heroSubtitle || content.hero.subtitle || siteContent.hero.subtitle,
+    ogImage: siteConfig.ogImage,
+    heroTitle:
+      language === "he" && settings?.heroTitle?.trim() ? settings.heroTitle : content.hero.title,
+    heroSubtitle:
+      language === "he" && settings?.heroSubtitle?.trim() ? settings.heroSubtitle : content.hero.subtitle,
     heroImage: settings?.heroImageUrl || siteConfig.heroImage,
-    aboutTitle: settings?.aboutTitle || content.about.title || siteContent.about.title,
-    aboutDescription: settings?.aboutDescription || content.about.description || siteContent.about.description,
+    aboutTitle:
+      language === "he" && settings?.aboutTitle?.trim() ? settings.aboutTitle : content.about.title,
+    aboutDescription:
+      language === "he" && settings?.aboutDescription?.trim()
+        ? settings.aboutDescription
+        : content.about.description,
     aboutSecondaryDescription:
-      settings?.aboutSecondaryDescription || content.about.secondaryDescription || siteContent.about.secondaryDescription,
+      language === "he" && settings?.aboutSecondaryDescription?.trim()
+        ? settings.aboutSecondaryDescription
+        : content.about.secondaryDescription,
     aboutImage: settings?.aboutImageUrl || siteConfig.aboutImage,
     aboutSecondaryImage: settings?.aboutSecondaryImageUrl || siteConfig.heroImage,
     content,

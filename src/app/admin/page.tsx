@@ -1,6 +1,8 @@
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
+import type { Project } from "@prisma/client";
+
 import {
   createProjectAction,
   deleteProjectAction,
@@ -8,13 +10,32 @@ import {
   saveSiteSettingsAction,
   updateProjectAction,
 } from "@/app/admin/actions";
+import BilingualContentStudio from "@/components/admin/BilingualContentStudio";
 import AdminSaveButton from "@/components/admin/AdminSaveButton";
+import ProjectEditorForm from "@/components/admin/ProjectEditorForm";
 import { isAdminAuthenticated } from "@/lib/admin-auth";
+import {
+  defaultPayloadFromLegacy,
+  parseGalleryPayload,
+  parseLocalizedPayload,
+} from "@/lib/project-mapper";
 import { ensureProjectsSeeded } from "@/lib/projects";
 import { prisma } from "@/lib/prisma";
 import { getPublicSiteData } from "@/lib/site-settings";
 
 import styles from "./page.module.css";
+
+function projectEditorDefaults(project: Project) {
+  const localized =
+    parseLocalizedPayload(project.localizedPayload) ?? defaultPayloadFromLegacy(project.title, project.category);
+
+  return {
+    initialPayload: localized,
+    initialCover: { url: project.imageUrl, path: project.imagePath },
+    initialGallery: parseGalleryPayload(project.galleryPayload),
+    initialSize: project.size,
+  };
+}
 
 type AdminPageProps = {
   searchParams?: Promise<{
@@ -24,10 +45,15 @@ type AdminPageProps = {
 
 const navigationItems = [
   { label: "Dashboard", href: "#dashboard", icon: "◌" },
-  { label: "Content", href: "#content", icon: "✦" },
-  { label: "Projects", href: "#projects", icon: "▣" },
-  { label: "Leads", href: "#leads", icon: "◫" },
-  { label: "Settings", href: "#settings", icon: "⚙" },
+  { label: "בית", href: "#dashboard", icon: "✦" },
+  { label: "אודות", href: "#content", icon: "◍" },
+  { label: "שירותים", href: "#content", icon: "◫" },
+  { label: "תהליך עבודה", href: "#content", icon: "◐" },
+  { label: "פרויקטים", href: "#projects", icon: "▣" },
+  { label: "צור קשר", href: "#content", icon: "✉" },
+  { label: "SEO", href: "#content", icon: "⌁" },
+  { label: "משתמשים", href: "#dashboard", icon: "◎" },
+  { label: "הגדרות", href: "#settings", icon: "⚙" },
 ];
 
 const toastMessages: Record<string, string> = {
@@ -86,7 +112,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
   }
 
   const params = (searchParams ? await searchParams : {}) || {};
-  const [settings, projects, submissions] = await Promise.all([
+  const [settings, rawProjects, submissions] = await Promise.all([
     getPublicSiteData(),
     ensureProjectsSeeded(),
     prisma.contactSubmission.findMany({
@@ -94,6 +120,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
       take: 20,
     }),
   ]);
+  const projects: Project[] = rawProjects;
 
   return (
     <main className={styles.page}>
@@ -108,7 +135,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
           <nav className={styles.nav}>
             {navigationItems.map((item, index) => (
               <a
-                key={item.href}
+                key={`${item.label}-${item.href}`}
                 href={item.href}
                 className={[styles.navItem, index === 0 ? styles.navItemActive : ""].filter(Boolean).join(" ")}
               >
@@ -126,6 +153,10 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
             <div className={styles.miniStat}>
               <span>Projects</span>
               <strong>{projects.length}</strong>
+            </div>
+            <div className={styles.supportBox}>
+              <strong>זקוקה לעזרה?</strong>
+              <p>אפשר להתחיל מעריכת שפה אחת, לשמור, ואז לתרגם לצד השני ולעבור בדיקה ידנית.</p>
             </div>
           </div>
         </aside>
@@ -166,6 +197,14 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
               <p>פרויקטים מנוהלים עכשיו ישירות דרך Storage ו־Database.</p>
             </article>
           </div>
+
+          <section className={styles.sectionBlock}>
+            <div className={styles.sectionHeader}>
+              <h2>דו-לשוני</h2>
+              <p>סטודיו עריכה בעברית ובערבית עם preview חי, תרגום ושמירה נקייה לפי שפה אחת בכל פעם.</p>
+            </div>
+            <BilingualContentStudio initialContent={settings.localizedContent} />
+          </section>
 
           <form id="site-settings-form" action={saveSiteSettingsAction} className={styles.form}>
             <div className={styles.formStickyBar}>
@@ -332,91 +371,59 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
               <p>העלאה, עריכה ומחיקה אמיתיים של פרויקטים ותמונות מתוך האדמין.</p>
             </div>
 
-            <form action={createProjectAction} className={styles.projectCreateCard}>
+            <div className={styles.projectCreateCard}>
               <div className={styles.panelHeader}>
                 <h3>הוספת פרויקט חדש</h3>
-                <p>צרי כרטיס חדש, העלי תמונה והפרויקט יופיע מיד גם באתר וגם באדמין.</p>
+                <p>תוכן דו־לשוני, תיאור קצר וארוך, גלריה ותמונת שער. הקבצים נשמרים ב־Supabase Storage.</p>
               </div>
-
-              <div className={styles.projectFormGrid}>
-                <FloatingField name="title" label="כותרת פרויקט" defaultValue="" required />
-                <FloatingField name="category" label="קטגוריה" defaultValue="" required />
-
-                <label className={styles.selectField}>
-                  <span>גודל כרטיס</span>
-                  <select name="size" defaultValue="standard">
-                    <option value="standard">Standard</option>
-                    <option value="wide">Wide</option>
-                    <option value="tall">Tall</option>
-                  </select>
-                </label>
-
-                <label className={styles.uploadField}>
-                  <span>תמונת פרויקט</span>
-                  <input type="file" name="image" accept="image/*" required />
-                </label>
-              </div>
-
-              <div className={styles.projectsToolbar}>
-                <button type="submit" className={styles.secondaryButton}>
-                  יצירת פרויקט
-                </button>
-                <span className={styles.helperText}>הקובץ יישמר ב־bucket ויקבל URL ציבורי להצגה באתר.</span>
-              </div>
-            </form>
+              <ProjectEditorForm
+                mode="create"
+                initialPayload={defaultPayloadFromLegacy("", "")}
+                initialCover={{ url: "", path: "" }}
+                initialGallery={[]}
+                initialSize="standard"
+                formAction={createProjectAction}
+                submitLabel="יצירת פרויקט"
+              />
+            </div>
 
             {projects.length ? (
               <div className={styles.projectsGrid}>
-                {projects.map((project) => (
-                  <div key={project.id} className={styles.projectCard}>
-                    <div className={styles.projectImageWrap}>
-                    <Image
-                      src={project.imageUrl}
-                      alt={project.title}
-                      fill
-                      unoptimized
-                      sizes="(max-width: 980px) 100vw, 25vw"
-                      className={styles.projectImage}
-                    />
-                    </div>
-
-                    <form action={updateProjectAction} className={styles.projectEditor}>
-                      <input type="hidden" name="id" value={project.id} />
-
-                      <div className={styles.projectFields}>
-                        <FloatingField name="title" label="כותרת" defaultValue={project.title} required />
-                        <FloatingField name="category" label="קטגוריה" defaultValue={project.category} required />
-
-                        <label className={styles.selectField}>
-                          <span>גודל כרטיס</span>
-                          <select name="size" defaultValue={project.size}>
-                            <option value="standard">Standard</option>
-                            <option value="wide">Wide</option>
-                            <option value="tall">Tall</option>
-                          </select>
-                        </label>
-
-                        <label className={styles.uploadField}>
-                          <span>החלפת תמונה</span>
-                          <input type="file" name="image" accept="image/*" />
-                        </label>
+                {projects.map((project) => {
+                  const editor = projectEditorDefaults(project);
+                  return (
+                    <div key={project.id} className={styles.projectCard}>
+                      <div className={styles.projectImageWrap}>
+                        <Image
+                          src={project.imageUrl}
+                          alt={project.title}
+                          fill
+                          unoptimized
+                          sizes="(max-width: 980px) 100vw, 25vw"
+                          className={styles.projectImage}
+                        />
                       </div>
 
-                      <div className={styles.projectActions}>
-                        <button type="submit" className={styles.secondaryButton}>
-                          Edit
+                      <ProjectEditorForm
+                        mode="edit"
+                        projectId={project.id}
+                        initialPayload={editor.initialPayload}
+                        initialCover={editor.initialCover}
+                        initialGallery={editor.initialGallery}
+                        initialSize={editor.initialSize}
+                        formAction={updateProjectAction}
+                        submitLabel="שמירת פרויקט"
+                      />
+
+                      <form action={deleteProjectAction} className={styles.projectDeleteForm}>
+                        <input type="hidden" name="id" value={project.id} />
+                        <button type="submit" className={styles.ghostDangerButton}>
+                          Delete
                         </button>
-                      </div>
-                    </form>
-
-                    <form action={deleteProjectAction} className={styles.projectDeleteForm}>
-                      <input type="hidden" name="id" value={project.id} />
-                      <button type="submit" className={styles.ghostDangerButton}>
-                        Delete
-                      </button>
-                    </form>
-                  </div>
-                ))}
+                      </form>
+                    </div>
+                  );
+                })}
               </div>
             ) : (
               <div className={styles.emptyState}>עדיין אין פרויקטים שמורים. צרי את הפרויקט הראשון מהטופס למעלה.</div>
