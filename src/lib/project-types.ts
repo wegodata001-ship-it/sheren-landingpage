@@ -1,6 +1,20 @@
-import type { ProjectSize } from "@prisma/client";
-
 import type { SupportedLanguage } from "@/lib/localized-content";
+
+export type ProjectSize = "wide" | "tall" | "standard";
+
+export type ProjectRecord = {
+  id: string;
+  title: string;
+  category: string;
+  imageUrl: string;
+  imagePath: string;
+  size: ProjectSize;
+  orderIndex: number;
+  localizedPayload: unknown;
+  galleryPayload: unknown;
+  createdAt: Date;
+  updatedAt: Date;
+};
 
 export type ProjectBilingualText = {
   he: string;

@@ -1,8 +1,6 @@
 import Image from "next/image";
 import { redirect } from "next/navigation";
 
-import type { Project } from "@prisma/client";
-
 import {
   createProjectAction,
   deleteProjectAction,
@@ -20,6 +18,7 @@ import {
   parseLocalizedPayload,
 } from "@/lib/project-mapper";
 import { ensureProjectsSeeded } from "@/lib/projects";
+import type { ProjectRecord as Project } from "@/lib/project-types";
 import { prisma } from "@/lib/prisma";
 import { getPublicSiteData } from "@/lib/site-settings";
 

@@ -1,10 +1,9 @@
-import type { Project } from "@prisma/client";
-
 import type { LocalizedSiteContent, SupportedLanguage } from "@/lib/localized-content";
 import {
   emptyBilingual,
   type ProjectGalleryImage,
   type ProjectLocalizedPayload,
+  type ProjectRecord,
   type PublicProject,
 } from "@/lib/project-types";
 
@@ -67,7 +66,7 @@ export function parseGalleryPayload(value: unknown): ProjectGalleryImage[] {
 }
 
 export function mapProjectToPublic(
-  project: Project,
+  project: ProjectRecord,
   index: number,
   localized: LocalizedSiteContent,
 ): PublicProject {

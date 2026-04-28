@@ -1,17 +1,16 @@
 import { unstable_noStore as noStore } from "next/cache";
-import type { Project } from "@prisma/client";
 
 import { siteContent, type ProjectItem } from "@/data/siteContent";
 import { getMergedLocalizedContent } from "@/lib/localized-content";
 import { mapProjectToPublic } from "@/lib/project-mapper";
-import type { PublicProject } from "@/lib/project-types";
+import type { ProjectRecord, PublicProject } from "@/lib/project-types";
 
 import { prisma } from "./prisma";
 
 export type { PublicProject } from "@/lib/project-types";
 export { pickProjectLang } from "@/lib/project-types";
 
-export async function ensureProjectsSeeded(): Promise<Project[]> {
+export async function ensureProjectsSeeded(): Promise<ProjectRecord[]> {
   const projects = await prisma.project.findMany({
     orderBy: [{ orderIndex: "asc" }, { createdAt: "asc" }],
   });
