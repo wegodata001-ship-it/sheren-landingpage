@@ -9,13 +9,6 @@ export type WhyChooseUsItem = {
   description: string;
 };
 
-export type ProjectItem = {
-  title: string;
-  category: string;
-  image: string;
-  size: "wide" | "tall" | "standard";
-};
-
 export const siteContent = {
   promoBar: {
     text: "פגישות היכרות ותכנון פתוחות כעת לפרויקטים חדשים.",
@@ -112,37 +105,6 @@ export const siteContent = {
           "ליווי בשטח, תיאומים, בחירות חומרים ופיקוח כדי לשמור על הקו שנקבע מתחילת הדרך.",
       },
     ] as WhyChooseUsItem[],
-  },
-  projects: {
-    title: "פרויקטים נבחרים",
-    intro:
-      "שפה אדריכלית רגועה, שכבות חומר, אור טבעי ודיוק בפרטים. עדכון הפרויקטים האמיתיים יוכל להחליף את התמונות הזמניות בכל שלב.",
-    items: [
-      {
-        title: "בית פרטי בקווים נקיים",
-        category: "אדריכלות + עיצוב פנים",
-        image: "/images/hero/hero-placeholder.svg",
-        size: "wide",
-      },
-      {
-        title: "שדרוג חלל מגורים קיים",
-        category: "עיצוב פנים",
-        image: "/images/about/about-placeholder.svg",
-        size: "tall",
-      },
-      {
-        title: "ליווי תכנון ורישוי",
-        category: "תכנון + רישוי",
-        image: "/images/hero/hero-placeholder.svg",
-        size: "standard",
-      },
-      {
-        title: "מעטפת מלאה למשפחה",
-        category: "קונספט, ביצוע וליווי",
-        image: "/images/about/about-placeholder.svg",
-        size: "standard",
-      },
-    ] as ProjectItem[],
   },
   cta: {
     title: "כל השירותים במקום אחד",

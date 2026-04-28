@@ -71,23 +71,6 @@ export type LocalizedSiteContent = {
     intro: LocalizedText;
     items: LocalizedProcessItem[];
   };
-  projectsSection: {
-    eyebrow: LocalizedText;
-    title: LocalizedText;
-    intro: LocalizedText;
-    helper: LocalizedText;
-    ctaLabel: LocalizedText;
-    previousLabel: LocalizedText;
-    nextLabel: LocalizedText;
-    viewProject: LocalizedText;
-    modalCloseAria: LocalizedText;
-    modalDetailsLabel: LocalizedText;
-    modalGalleryAria: LocalizedText;
-    modalWhatsappCta: LocalizedText;
-    modalLocation: LocalizedText;
-    modalYear: LocalizedText;
-    modalStyle: LocalizedText;
-  };
   cta: {
     eyebrow: LocalizedText;
     title: LocalizedText;
@@ -178,10 +161,6 @@ export type LocalizedSiteContent = {
     nativeHebrew: LocalizedText;
     nativeArabic: LocalizedText;
   };
-  portfolioItems: Array<{
-    title: LocalizedText;
-    category: LocalizedText;
-  }>;
 };
 
 export const defaultLocalizedContent: LocalizedSiteContent = buildLocalizedSiteContentFromFiles();
@@ -191,7 +170,6 @@ export type LocalizedSectionKey =
   | "about"
   | "services"
   | "process"
-  | "projectsSection"
   | "cta"
   | "contact"
   | "quote"
@@ -206,7 +184,6 @@ export const contentSectionOrder: Array<{
   { key: "about", label: "אודות" },
   { key: "services", label: "שירותים" },
   { key: "process", label: "תהליך עבודה" },
-  { key: "projectsSection", label: "פרויקטים" },
   { key: "cta", label: "קריאה לפעולה" },
   { key: "contact", label: "צור קשר" },
   { key: "quote", label: "ציטוט" },

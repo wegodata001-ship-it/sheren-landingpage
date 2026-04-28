@@ -73,23 +73,6 @@ export function buildLocalizedSiteContentFromFiles(): LocalizedSiteContent {
         description: zipText(item.description, ar.process.items[index]?.description || item.description),
       })),
     },
-    projectsSection: {
-      eyebrow: zipText(he.projectsSection.eyebrow, ar.projectsSection.eyebrow),
-      title: zipText(he.projectsSection.title, ar.projectsSection.title),
-      intro: zipText(he.projectsSection.intro, ar.projectsSection.intro),
-      helper: zipText(he.projectsSection.helper, ar.projectsSection.helper),
-      ctaLabel: zipText(he.projectsSection.ctaLabel, ar.projectsSection.ctaLabel),
-      previousLabel: zipText(he.projectsSection.previousLabel, ar.projectsSection.previousLabel),
-      nextLabel: zipText(he.projectsSection.nextLabel, ar.projectsSection.nextLabel),
-      viewProject: zipText(he.projectsSection.viewProject, ar.projectsSection.viewProject),
-      modalCloseAria: zipText(he.projectsSection.modalCloseAria, ar.projectsSection.modalCloseAria),
-      modalDetailsLabel: zipText(he.projectsSection.modalDetailsLabel, ar.projectsSection.modalDetailsLabel),
-      modalGalleryAria: zipText(he.projectsSection.modalGalleryAria, ar.projectsSection.modalGalleryAria),
-      modalWhatsappCta: zipText(he.projectsSection.modalWhatsappCta, ar.projectsSection.modalWhatsappCta),
-      modalLocation: zipText(he.projectsSection.modalLocation, ar.projectsSection.modalLocation),
-      modalYear: zipText(he.projectsSection.modalYear, ar.projectsSection.modalYear),
-      modalStyle: zipText(he.projectsSection.modalStyle, ar.projectsSection.modalStyle),
-    },
     cta: {
       eyebrow: zipText(he.cta.eyebrow, ar.cta.eyebrow),
       title: zipText(he.cta.title, ar.cta.title),
@@ -183,9 +166,5 @@ export function buildLocalizedSiteContentFromFiles(): LocalizedSiteContent {
       nativeHebrew: zipText(he.languages.nativeHebrew, ar.languages.nativeHebrew),
       nativeArabic: zipText(he.languages.nativeArabic, ar.languages.nativeArabic),
     },
-    portfolioItems: he.portfolioItems.map((item, index) => ({
-      title: zipText(item.title, ar.portfolioItems[index]?.title || item.title),
-      category: zipText(item.category, ar.portfolioItems[index]?.category || item.category),
-    })),
   };
 }

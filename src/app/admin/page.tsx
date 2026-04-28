@@ -2,39 +2,16 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 
 import {
-  createProjectAction,
-  deleteProjectAction,
   logoutAction,
   saveSiteSettingsAction,
-  updateProjectAction,
 } from "@/app/admin/actions";
 import BilingualContentStudio from "@/components/admin/BilingualContentStudio";
 import AdminSaveButton from "@/components/admin/AdminSaveButton";
-import ProjectEditorForm from "@/components/admin/ProjectEditorForm";
 import { isAdminAuthenticated } from "@/lib/admin-auth";
-import {
-  defaultPayloadFromLegacy,
-  parseGalleryPayload,
-  parseLocalizedPayload,
-} from "@/lib/project-mapper";
-import { ensureProjectsSeeded } from "@/lib/projects";
-import type { ProjectRecord as Project } from "@/lib/project-types";
 import { prisma } from "@/lib/prisma";
 import { getPublicSiteData } from "@/lib/site-settings";
 
 import styles from "./page.module.css";
-
-function projectEditorDefaults(project: Project) {
-  const localized =
-    parseLocalizedPayload(project.localizedPayload) ?? defaultPayloadFromLegacy(project.title, project.category);
-
-  return {
-    initialPayload: localized,
-    initialCover: { url: project.imageUrl, path: project.imagePath },
-    initialGallery: parseGalleryPayload(project.galleryPayload),
-    initialSize: project.size,
-  };
-}
 
 type AdminPageProps = {
   searchParams?: Promise<{
@@ -71,7 +48,7 @@ const navigationItems = [
   { label: "אודות", href: "#content", icon: "◍" },
   { label: "שירותים", href: "#content", icon: "◫" },
   { label: "תהליך עבודה", href: "#content", icon: "◐" },
-  { label: "פרויקטים", href: "#projects", icon: "▣" },
+  { label: "פרויקטים", href: "/admin/projects", icon: "▣" },
   { label: "צור קשר", href: "#content", icon: "✉" },
   { label: "SEO", href: "#content", icon: "⌁" },
   { label: "משתמשים", href: "#dashboard", icon: "◎" },
@@ -80,10 +57,6 @@ const navigationItems = [
 
 const toastMessages: Record<string, string> = {
   "1": "נשמר בהצלחה",
-  "project-created": "הפרויקט נוסף בהצלחה",
-  "project-updated": "הפרויקט עודכן בהצלחה",
-  "project-deleted": "הפרויקט נמחק בהצלחה",
-  "project-error": "בדקי שכל השדות מולאו ושצורפה תמונה תקינה",
 };
 
 function FloatingField({
@@ -134,15 +107,13 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
   }
 
   const params = (searchParams ? await searchParams : {}) || {};
-  const [settings, rawProjects, rawSubmissions] = await Promise.all([
+  const [settings, rawSubmissions] = await Promise.all([
     getPublicSiteData(),
-    ensureProjectsSeeded(),
     prisma.contactSubmission.findMany({
       orderBy: { createdAt: "desc" },
       take: 20,
     }),
   ]);
-  const projects: Project[] = rawProjects;
   const submissions: Submission[] = rawSubmissions;
 
   return (
@@ -152,7 +123,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
           <div className={styles.brand}>
             <span className={styles.kicker}>Studio Control Panel</span>
             <strong>Shirin Admin</strong>
-            <p>שליטה מרוכזת בתוכן, פניות ותצוגת הפרויקטים.</p>
+            <p>שליטה מרוכזת בתוכן, שפות ופניות מהאתר.</p>
           </div>
 
           <nav className={styles.nav}>
@@ -173,10 +144,6 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
               <span>Leads</span>
               <strong>{submissions.length}</strong>
             </div>
-            <div className={styles.miniStat}>
-              <span>Projects</span>
-              <strong>{projects.length}</strong>
-            </div>
             <div className={styles.supportBox}>
               <strong>זקוקה לעזרה?</strong>
               <p>אפשר להתחיל מעריכת שפה אחת, לשמור, ואז לתרגם לצד השני ולעבור בדיקה ידנית.</p>
@@ -189,7 +156,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
             <div>
               <span className={styles.kicker}>Admin Dashboard</span>
               <h1>ניהול אתר שירין</h1>
-              <p>מערכת שליטה לעריכת תוכן, ניהול פרויקטים בסיסי ומעקב אחר פניות.</p>
+              <p>מערכת שליטה לעריכת תוכן, שפות ומעקב אחר פניות.</p>
             </div>
 
             <div className={styles.headerActions}>
@@ -213,11 +180,6 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
               <span>פניות חדשות</span>
               <strong>{submissions.length}</strong>
               <p>טופס האתר מזרים לכאן את כל הלידים שנשמרו.</p>
-            </article>
-            <article className={styles.metricCard}>
-              <span>פרויקטים מוצגים</span>
-              <strong>{projects.length}</strong>
-              <p>פרויקטים מנוהלים עכשיו ישירות דרך Storage ו־Database.</p>
             </article>
           </div>
 
@@ -374,10 +336,6 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
                       <span>Admin Auth</span>
                       <strong>Session Cookie</strong>
                     </div>
-                    <div className={styles.settingRow}>
-                      <span>Project Media</span>
-                      <strong>Ready for Storage</strong>
-                    </div>
                   </div>
                 </section>
               </div>
@@ -387,71 +345,6 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
               <AdminSaveButton label="שמירת כל התוכן" />
             </div>
           </form>
-
-          <section className={styles.sectionBlock} id="projects">
-            <div className={styles.sectionHeader}>
-              <h2>Projects</h2>
-              <p>העלאה, עריכה ומחיקה אמיתיים של פרויקטים ותמונות מתוך האדמין.</p>
-            </div>
-
-            <div className={styles.projectCreateCard}>
-              <div className={styles.panelHeader}>
-                <h3>הוספת פרויקט חדש</h3>
-                <p>תוכן דו־לשוני, תיאור קצר וארוך, גלריה ותמונת שער. הקבצים נשמרים ב־Supabase Storage.</p>
-              </div>
-              <ProjectEditorForm
-                mode="create"
-                initialPayload={defaultPayloadFromLegacy("", "")}
-                initialCover={{ url: "", path: "" }}
-                initialGallery={[]}
-                initialSize="standard"
-                formAction={createProjectAction}
-                submitLabel="יצירת פרויקט"
-              />
-            </div>
-
-            {projects.length ? (
-              <div className={styles.projectsGrid}>
-                {projects.map((project) => {
-                  const editor = projectEditorDefaults(project);
-                  return (
-                    <div key={project.id} className={styles.projectCard}>
-                      <div className={styles.projectImageWrap}>
-                        <Image
-                          src={project.imageUrl}
-                          alt={project.title}
-                          fill
-                          unoptimized
-                          sizes="(max-width: 980px) 100vw, 25vw"
-                          className={styles.projectImage}
-                        />
-                      </div>
-
-                      <ProjectEditorForm
-                        mode="edit"
-                        projectId={project.id}
-                        initialPayload={editor.initialPayload}
-                        initialCover={editor.initialCover}
-                        initialGallery={editor.initialGallery}
-                        initialSize={editor.initialSize}
-                        formAction={updateProjectAction}
-                        submitLabel="שמירת פרויקט"
-                      />
-
-                      <form action={deleteProjectAction} className={styles.projectDeleteForm}>
-                        <input type="hidden" name="id" value={project.id} />
-                        <button type="submit" className={styles.ghostDangerButton}>
-                          Delete
-                        </button>
-                      </form>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <div className={styles.emptyState}>עדיין אין פרויקטים שמורים. צרי את הפרויקט הראשון מהטופס למעלה.</div>
-            )}
-          </section>
 
           <section className={styles.sectionBlock} id="leads">
             <div className={styles.sectionHeader}>

@@ -122,24 +122,6 @@ export const messages: Messages = {
       },
     ],
   },
-  projectsSection: {
-    eyebrow: "المشاريع / المعرض",
-    title: "مشاريع مختارة",
-    intro:
-      "لغة معمارية هادئة وطبقات مواد وضوء طبيعي ودقة في التفاصيل. يمكن استبدال الصور المؤقتة بصور المشاريع الحقيقية في أي وقت.",
-    helper: "مشاريع مختارة ضمن عرض أنظف وأسهل للديسكتوب والموبايل.",
-    ctaLabel: "لنتحدث عن مشروع مشابه",
-    previousLabel: "السابق",
-    nextLabel: "التالي",
-    viewProject: "عرض المشروع",
-    modalCloseAria: "إغلاق تفاصيل المشروع",
-    modalDetailsLabel: "التفاصيل",
-    modalGalleryAria: "معرض الصور",
-    modalWhatsappCta: "تريدون مشروعًا مشابهًا؟ تواصلوا معنا",
-    modalLocation: "الموقع",
-    modalYear: "السنة",
-    modalStyle: "الأسلوب",
-  },
   cta: {
     eyebrow: "حزمة كاملة",
     title: "كل الخدمات في مكان واحد",
@@ -236,22 +218,4 @@ export const messages: Messages = {
     nativeHebrew: "עברית",
     nativeArabic: "العربية",
   },
-  portfolioItems: [
-    {
-      title: "منزل خاص بخطوط نظيفة",
-      category: "عمارة + تصميم داخلي",
-    },
-    {
-      title: "ترقية لمسكن قائم",
-      category: "تصميم داخلي",
-    },
-    {
-      title: "مرافقة تخطيط وترخيص",
-      category: "تخطيط + ترخيص",
-    },
-    {
-      title: "حزمة كاملة لعائلة",
-      category: "مفهوم، تنفيذ ومرافقة",
-    },
-  ],
 };

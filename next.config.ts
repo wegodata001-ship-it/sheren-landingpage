@@ -14,6 +14,7 @@ if (supabaseUrl) {
 }
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: ["172.24.0.1"],
   images: {
     remotePatterns,
   },

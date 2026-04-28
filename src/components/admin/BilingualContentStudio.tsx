@@ -414,14 +414,6 @@ export default function BilingualContentStudio({ initialContent }: BilingualCont
             ))}
           </>
         );
-      case "projectsSection":
-        return (
-          <>
-            {dual("Section title", ["projectsSection", "title"])}
-            {dual("Section intro", ["projectsSection", "intro"], true)}
-            {dual("CTA button", ["projectsSection", "ctaLabel"])}
-          </>
-        );
       case "cta":
         return (
           <>

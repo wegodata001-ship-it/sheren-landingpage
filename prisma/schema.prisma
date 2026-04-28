@@ -6,12 +6,6 @@ datasource db {
   provider = "postgresql"
 }
 
-enum ProjectSize {
-  wide
-  tall
-  standard
-}
-
 model ContactSubmission {
   id        String   @id @default(cuid())
   name      String
@@ -47,17 +41,16 @@ model SiteSettings {
 }
 
 model Project {
-  id                String      @id @default(cuid())
-  title             String
-  category          String
-  imageUrl          String
-  imagePath         String
-  size              ProjectSize @default(standard)
-  orderIndex        Int         @default(0)
-  /// Bilingual copy + optional metadata (title, shortDescription, fullDescription, category, location, year, style).
-  localizedPayload  Json?
-  /// Ordered gallery images excluding cover: [{ url, path }, ...]
-  galleryPayload    Json?
-  createdAt         DateTime    @default(now())
-  updatedAt         DateTime    @updatedAt
+  id             String   @id @default(cuid())
+  title_he       String   @default("")
+  title_ar       String?
+  description_he String?
+  description_ar String?
+  category       String
+  location       String?
+  image          String?
+  gallery        Json?
+  isPublished    Boolean  @default(true)
+  isFeatured     Boolean  @default(false)
+  createdAt      DateTime @default(now())
 }

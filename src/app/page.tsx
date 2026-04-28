@@ -9,14 +9,13 @@ import CTASection from "@/components/sections/CTASection";
 import Hero from "@/components/sections/Hero";
 import QuoteSection from "@/components/sections/QuoteSection";
 import ServicesSection from "@/components/sections/ServicesSection";
-import TestimonialsSection from "@/components/sections/TestimonialsSection";
 import WhyChooseUsSection from "@/components/sections/WhyChooseUsSection";
 import AccessibilityButton from "@/components/ui/AccessibilityButton";
 import SiteLoader from "@/components/ui/SiteLoader";
 import WhatsAppButton from "@/components/ui/WhatsAppButton";
+import ProjectsSection from "@/components/projects/ProjectsSection";
 import { getThemeVariables } from "@/lib/helpers";
 import { I18nProvider } from "@/lib/i18n/use-language";
-import { getPublicProjects } from "@/lib/projects";
 import { getCurrentSiteLanguage } from "@/lib/site-language";
 import { getPublicSiteData } from "@/lib/site-settings";
 
@@ -41,7 +40,6 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Home() {
   const language = await getCurrentSiteLanguage();
   const settings = await getPublicSiteData(language);
-  const projects = await getPublicProjects();
 
   return (
     <I18nProvider locale={settings.language} t={settings.content}>
@@ -65,7 +63,7 @@ export default async function Home() {
           <CTASection />
           <QuoteSection />
           <WhyChooseUsSection />
-          <TestimonialsSection projects={projects} whatsappNumber={settings.whatsappNumber} />
+          <ProjectsSection />
           <ContactSection settings={settings} />
         </main>
         <Footer settings={settings} />

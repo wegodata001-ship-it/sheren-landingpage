@@ -65,23 +65,6 @@ export type LocalizedPublicContent = {
       description: string;
     }>;
   };
-  projectsSection: {
-    eyebrow: string;
-    title: string;
-    intro: string;
-    helper: string;
-    ctaLabel: string;
-    previousLabel: string;
-    nextLabel: string;
-    viewProject: string;
-    modalCloseAria: string;
-    modalDetailsLabel: string;
-    modalGalleryAria: string;
-    modalWhatsappCta: string;
-    modalLocation: string;
-    modalYear: string;
-    modalStyle: string;
-  };
   cta: {
     eyebrow: string;
     title: string;
@@ -172,10 +155,6 @@ export type LocalizedPublicContent = {
     nativeHebrew: string;
     nativeArabic: string;
   };
-  portfolioItems: Array<{
-    title: string;
-    category: string;
-  }>;
 };
 
 export type PublicSiteData = {
@@ -260,23 +239,6 @@ function localizeContent(
         title: getLocalizedText(item.title, language, fallbackLanguage),
         description: getLocalizedText(item.description, language, fallbackLanguage),
       })),
-    },
-    projectsSection: {
-      eyebrow: getLocalizedText(content.projectsSection.eyebrow, language, fallbackLanguage),
-      title: getLocalizedText(content.projectsSection.title, language, fallbackLanguage),
-      intro: getLocalizedText(content.projectsSection.intro, language, fallbackLanguage),
-      helper: getLocalizedText(content.projectsSection.helper, language, fallbackLanguage),
-      ctaLabel: getLocalizedText(content.projectsSection.ctaLabel, language, fallbackLanguage),
-      previousLabel: getLocalizedText(content.projectsSection.previousLabel, language, fallbackLanguage),
-      nextLabel: getLocalizedText(content.projectsSection.nextLabel, language, fallbackLanguage),
-      viewProject: getLocalizedText(content.projectsSection.viewProject, language, fallbackLanguage),
-      modalCloseAria: getLocalizedText(content.projectsSection.modalCloseAria, language, fallbackLanguage),
-      modalDetailsLabel: getLocalizedText(content.projectsSection.modalDetailsLabel, language, fallbackLanguage),
-      modalGalleryAria: getLocalizedText(content.projectsSection.modalGalleryAria, language, fallbackLanguage),
-      modalWhatsappCta: getLocalizedText(content.projectsSection.modalWhatsappCta, language, fallbackLanguage),
-      modalLocation: getLocalizedText(content.projectsSection.modalLocation, language, fallbackLanguage),
-      modalYear: getLocalizedText(content.projectsSection.modalYear, language, fallbackLanguage),
-      modalStyle: getLocalizedText(content.projectsSection.modalStyle, language, fallbackLanguage),
     },
     cta: {
       eyebrow: getLocalizedText(content.cta.eyebrow, language, fallbackLanguage),
@@ -368,10 +330,6 @@ function localizeContent(
       nativeHebrew: getLocalizedText(content.languages.nativeHebrew, language, fallbackLanguage),
       nativeArabic: getLocalizedText(content.languages.nativeArabic, language, fallbackLanguage),
     },
-    portfolioItems: content.portfolioItems.map((item) => ({
-      title: getLocalizedText(item.title, language, fallbackLanguage),
-      category: getLocalizedText(item.category, language, fallbackLanguage),
-    })),
   };
 }
 

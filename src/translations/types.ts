@@ -62,23 +62,6 @@ export type Messages = {
     intro: string;
     items: ProcessMessage[];
   };
-  projectsSection: {
-    eyebrow: string;
-    title: string;
-    intro: string;
-    helper: string;
-    ctaLabel: string;
-    previousLabel: string;
-    nextLabel: string;
-    viewProject: string;
-    modalCloseAria: string;
-    modalDetailsLabel: string;
-    modalGalleryAria: string;
-    modalWhatsappCta: string;
-    modalLocation: string;
-    modalYear: string;
-    modalStyle: string;
-  };
   cta: {
     eyebrow: string;
     title: string;
@@ -170,9 +153,4 @@ export type Messages = {
     nativeHebrew: string;
     nativeArabic: string;
   };
-  /** Parallel to seeded `siteContent.projects.items` order — used for Arabic UI overlay on project cards. */
-  portfolioItems: Array<{
-    title: string;
-    category: string;
-  }>;
 };

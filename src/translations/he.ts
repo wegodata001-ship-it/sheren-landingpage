@@ -58,23 +58,6 @@ export const messages: Messages = {
       description: item.description,
     })),
   },
-  projectsSection: {
-    eyebrow: "פרויקטים / גלריה",
-    title: siteContent.projects.title,
-    intro: siteContent.projects.intro,
-    helper: "פרויקטים נבחרים בתצוגה נקייה ונוחה יותר לדסקטופ ולמובייל.",
-    ctaLabel: "לדבר על פרויקט דומה",
-    previousLabel: "הקודם",
-    nextLabel: "הבא",
-    viewProject: "לצפייה בפרויקט",
-    modalCloseAria: "סגירת פרטי פרויקט",
-    modalDetailsLabel: "פרטים",
-    modalGalleryAria: "גלריית תמונות",
-    modalWhatsappCta: "רוצה פרויקט דומה? דברו איתנו",
-    modalLocation: "מיקום",
-    modalYear: "שנה",
-    modalStyle: "סגנון",
-  },
   cta: {
     eyebrow: "מעטפת מלאה",
     title: siteContent.cta.title,
@@ -165,8 +148,4 @@ export const messages: Messages = {
     nativeHebrew: "עברית",
     nativeArabic: "العربية",
   },
-  portfolioItems: siteContent.projects.items.map((item) => ({
-    title: item.title,
-    category: item.category,
-  })),
 };
