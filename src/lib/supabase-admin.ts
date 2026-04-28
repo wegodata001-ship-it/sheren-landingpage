@@ -17,11 +17,5 @@ export const supabaseAdmin = createClient(supabaseUrl, serviceRoleKey, {
 });
 
 export function getStorageBucket() {
-  const bucket = process.env.SUPABASE_STORAGE_BUCKET;
-
-  if (!bucket) {
-    throw new Error("Missing SUPABASE_STORAGE_BUCKET environment variable.");
-  }
-
-  return bucket;
+  return "photosheren";
 }

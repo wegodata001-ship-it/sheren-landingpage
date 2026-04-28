@@ -12,7 +12,8 @@ import {
 import { defaultLocalizedContent, getMergedLocalizedContent, type LocalizedSiteContent } from "@/lib/localized-content";
 
 import { prisma } from "@/lib/prisma";
-import { getStorageBucket, supabaseAdmin } from "@/lib/supabase-admin";
+import { supabaseAdmin } from "@/lib/supabase-admin";
+import { IMAGE_BUCKET, uploadImage } from "@/lib/upload-image";
 
 function getField(formData: FormData, key: string) {
   return String(formData.get(key) || "").trim();
@@ -23,38 +24,7 @@ function isFileLike(value: FormDataEntryValue | null): value is File {
 }
 
 async function uploadStorageImage(file: File, folder: string) {
-  console.log("[admin/actions] uploadStorageImage:start", {
-    name: file.name,
-    size: file.size,
-    type: file.type,
-    folder,
-  });
-  const bucket = getStorageBucket();
-  const safeFileName = file.name.replace(/[^\w.-]/g, "-");
-  const normalizedFolder = folder.replace(/^\/+|\/+$/g, "");
-  const filePath = `${normalizedFolder}/${Date.now()}-${safeFileName}`;
-  const arrayBuffer = await file.arrayBuffer();
-
-  const { error } = await supabaseAdmin.storage.from(bucket).upload(filePath, arrayBuffer, {
-    contentType: file.type || "application/octet-stream",
-    upsert: false,
-  });
-
-  if (error) {
-    console.error("[admin/actions] uploadStorageImage:error", { folder, message: error.message });
-    throw new Error(error.message);
-  }
-
-  const { data } = supabaseAdmin.storage.from(bucket).getPublicUrl(filePath);
-  console.log("[admin/actions] uploadStorageImage:success", {
-    filePath,
-    publicUrl: data.publicUrl,
-  });
-
-  return {
-    filePath,
-    publicUrl: data.publicUrl,
-  };
+  return uploadImage(file, folder);
 }
 
 async function removeProjectImage(path: string) {
@@ -62,8 +32,7 @@ async function removeProjectImage(path: string) {
     return;
   }
 
-  const bucket = getStorageBucket();
-  await supabaseAdmin.storage.from(bucket).remove([path]);
+  await supabaseAdmin.storage.from(IMAGE_BUCKET).remove([path]);
 }
 
 export async function loginAction(formData: FormData) {

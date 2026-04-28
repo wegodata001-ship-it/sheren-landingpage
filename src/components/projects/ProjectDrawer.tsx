@@ -136,6 +136,7 @@ export default function ProjectDrawer({ open, project, onClose, onSaved }: Proje
     <>
       <div className={styles.backdrop} data-open={open} onClick={onClose} />
       <aside className={styles.drawer} data-open={open} aria-hidden={!open}>
+        {isSaving ? <div className={styles.savingOverlay}>Uploading images and saving project...</div> : null}
         <div className={styles.panel}>
           <div className={styles.header}>
             <div>
@@ -278,7 +279,7 @@ export default function ProjectDrawer({ open, project, onClose, onSaved }: Proje
                 Cancel
               </button>
               <button type="button" className={styles.save} onClick={handleSave} disabled={isSaving}>
-                {isSaving ? "Saving..." : "Save"}
+                {isSaving ? "Uploading..." : "Save"}
               </button>
             </div>
           </div>

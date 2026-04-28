@@ -35,6 +35,18 @@
   transform: translateX(0);
 }
 
+.savingOverlay {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  padding: 0.8rem 1rem;
+  background: #0f0f0f;
+  color: #ffffff;
+  font-size: 0.86rem;
+  font-weight: 800;
+  text-align: center;
+}
+
 .panel {
   display: grid;
   gap: 1.1rem;

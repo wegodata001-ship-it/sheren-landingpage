@@ -1,8 +1,6 @@
 import { isAdminAuthenticated } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
-import { supabaseAdmin } from "@/lib/supabase-admin";
-
-const PROJECTS_BUCKET = process.env.SUPABASE_STORAGE_BUCKET || "site-assets";
+import { uploadImage } from "@/lib/upload-image";
 
 type ProjectCategory = "Residential" | "Commercial";
 
@@ -53,28 +51,8 @@ function toProjectResponse(project: {
   };
 }
 
-async function uploadProjectImage(file: File) {
-  const safeName = file.name.replace(/[^\w.-]/g, "-");
-  const filePath = `projects/${Date.now()}-${safeName}`;
-  const { error } = await supabaseAdmin.storage.from(PROJECTS_BUCKET).upload(filePath, file, {
-    contentType: file.type || "application/octet-stream",
-    upsert: false,
-  });
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  const { data } = supabaseAdmin.storage.from(PROJECTS_BUCKET).getPublicUrl(filePath);
-  return data.publicUrl;
-}
-
 async function readProjectForm(req: Request) {
   const formData = await req.formData();
-  const imageFile = formData.get("imageFile");
-  const uploadedImage = imageFile instanceof File && imageFile.size > 0 ? await uploadProjectImage(imageFile) : "";
-  const galleryFiles = formData.getAll("galleryFiles").filter((value): value is File => value instanceof File && value.size > 0);
-  const uploadedGallery = await Promise.all(galleryFiles.map((file) => uploadProjectImage(file)));
   const existingGalleryRaw = normalizeText(formData.get("galleryImages"));
   const existingGallery = existingGalleryRaw
     ? (JSON.parse(existingGalleryRaw) as unknown[]).filter((item): item is string => typeof item === "string")
@@ -93,10 +71,12 @@ async function readProjectForm(req: Request) {
     description_ar: normalizeText(formData.get("description_ar")) || null,
     category: normalizeCategory(formData.get("category")),
     location: normalizeText(formData.get("location")) || null,
-    image: uploadedImage || normalizeText(formData.get("image")) || null,
-    gallery: [...existingGallery, ...uploadedGallery],
+    image: normalizeText(formData.get("image")) || null,
+    gallery: existingGallery,
     isPublished: normalizeBoolean(formData.get("isPublished"), true),
     isFeatured: normalizeBoolean(formData.get("isFeatured"), false),
+    coverFile: formData.get("imageFile"),
+    galleryFiles: formData.getAll("galleryFiles").filter((value): value is File => value instanceof File && value.size > 0),
   };
 }
 
@@ -116,7 +96,14 @@ export async function POST(req: Request) {
 
   try {
     const body = await readProjectForm(req);
-    const project = await prisma.project.create({
+    console.log("[api/projects] create received", {
+      title_he: body.title_he,
+      category: body.category,
+      hasCoverFile: body.coverFile instanceof File && body.coverFile.size > 0,
+      galleryFiles: body.galleryFiles.length,
+    });
+
+    const created = await prisma.project.create({
       data: {
         title_he: body.title_he,
         title_ar: body.title_ar,
@@ -131,8 +118,31 @@ export async function POST(req: Request) {
       },
     });
 
+    const uploadedCover =
+      body.coverFile instanceof File && body.coverFile.size > 0
+        ? await uploadImage(body.coverFile, `projects/${created.id}/cover`)
+        : null;
+    const uploadedGallery = await Promise.all(
+      body.galleryFiles.map((file) => uploadImage(file, `projects/${created.id}/gallery`)),
+    );
+
+    const project = await prisma.project.update({
+      where: { id: created.id },
+      data: {
+        image: uploadedCover?.publicUrl || body.image,
+        gallery: [...body.gallery, ...uploadedGallery.map((item) => item.publicUrl)],
+      },
+    });
+
+    console.log("[api/projects] create saved", {
+      id: project.id,
+      image: project.image,
+      galleryCount: Array.isArray(project.gallery) ? project.gallery.length : 0,
+    });
+
     return Response.json(toProjectResponse(project));
   } catch (error) {
+    console.error("[api/projects] create failed", error);
     return Response.json({ error: error instanceof Error ? error.message : "Create project failed" }, { status: 400 });
   }
 }
@@ -149,6 +159,22 @@ export async function PUT(req: Request) {
       return Response.json({ error: "Missing project id." }, { status: 400 });
     }
 
+    console.log("[api/projects] update received", {
+      id: body.id,
+      title_he: body.title_he,
+      category: body.category,
+      hasCoverFile: body.coverFile instanceof File && body.coverFile.size > 0,
+      galleryFiles: body.galleryFiles.length,
+    });
+
+    const uploadedCover =
+      body.coverFile instanceof File && body.coverFile.size > 0
+        ? await uploadImage(body.coverFile, `projects/${body.id}/cover`)
+        : null;
+    const uploadedGallery = await Promise.all(
+      body.galleryFiles.map((file) => uploadImage(file, `projects/${body.id}/gallery`)),
+    );
+
     const project = await prisma.project.update({
       where: { id: body.id },
       data: {
@@ -158,15 +184,22 @@ export async function PUT(req: Request) {
         description_ar: body.description_ar,
         category: body.category,
         location: body.location,
-        image: body.image,
-        gallery: body.gallery,
+        image: uploadedCover?.publicUrl || body.image,
+        gallery: [...body.gallery, ...uploadedGallery.map((item) => item.publicUrl)],
         isPublished: body.isPublished,
         isFeatured: body.isFeatured,
       },
     });
 
+    console.log("[api/projects] update saved", {
+      id: project.id,
+      image: project.image,
+      galleryCount: Array.isArray(project.gallery) ? project.gallery.length : 0,
+    });
+
     return Response.json(toProjectResponse(project));
   } catch (error) {
+    console.error("[api/projects] update failed", error);
     return Response.json({ error: error instanceof Error ? error.message : "Update project failed" }, { status: 400 });
   }
 }
