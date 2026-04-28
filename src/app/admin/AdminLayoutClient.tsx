@@ -39,10 +39,6 @@ export function AdminLayoutClient({
   );
 
   useEffect(() => {
-    setLangState(parseAdminUiLang(initialLang));
-  }, [initialLang]);
-
-  useEffect(() => {
     const prevLang = document.documentElement.lang;
     const prevDir = document.documentElement.getAttribute("dir");
     document.documentElement.lang = lang === "ar" ? "ar" : "he";

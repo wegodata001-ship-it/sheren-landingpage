@@ -42,6 +42,29 @@ type AdminPageProps = {
   }>;
 };
 
+type Submission = {
+  id: string;
+  name: string;
+  phone?: string | null;
+  email?: string | null;
+  message?: string | null;
+  createdAt?: string | Date;
+};
+
+function formatSubmissionDate(value: Submission["createdAt"]) {
+  if (!value) {
+    return "—";
+  }
+
+  const date = value instanceof Date ? value : new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "—";
+  }
+
+  return date.toLocaleString("he-IL");
+}
+
 const navigationItems = [
   { label: "Dashboard", href: "#dashboard", icon: "◌" },
   { label: "בית", href: "#dashboard", icon: "✦" },
@@ -111,7 +134,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
   }
 
   const params = (searchParams ? await searchParams : {}) || {};
-  const [settings, rawProjects, submissions] = await Promise.all([
+  const [settings, rawProjects, rawSubmissions] = await Promise.all([
     getPublicSiteData(),
     ensureProjectsSeeded(),
     prisma.contactSubmission.findMany({
@@ -120,6 +143,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
     }),
   ]);
   const projects: Project[] = rawProjects;
+  const submissions: Submission[] = rawSubmissions;
 
   return (
     <main className={styles.page}>
@@ -279,7 +303,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
                 <section className={styles.cardPanel}>
                   <div className={styles.panelHeader}>
                     <h3>About</h3>
-                    <p>הסיפור, הסמכות והבידול שמופיעים באזור האודות, כולל התמונה הגדולה והתמונה הקטנה של הקולאז'.</p>
+                    <p>הסיפור, הסמכות והבידול שמופיעים באזור האודות, כולל התמונה הגדולה והתמונה הקטנה של הקולאז&apos;.</p>
                   </div>
 
                   <div className={styles.mediaPreviewCard}>
@@ -448,13 +472,13 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
                     </tr>
                   </thead>
                   <tbody>
-                    {submissions.map((submission) => (
+                    {submissions.map((submission: Submission) => (
                       <tr key={submission.id}>
                         <td>{submission.name}</td>
                         <td>{submission.phone || "—"}</td>
                         <td>{submission.email}</td>
                         <td className={styles.messageCell}>{submission.message}</td>
-                        <td>{submission.createdAt.toLocaleString("he-IL")}</td>
+                        <td>{formatSubmissionDate(submission.createdAt)}</td>
                       </tr>
                     ))}
                   </tbody>

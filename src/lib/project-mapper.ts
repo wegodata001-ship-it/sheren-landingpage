@@ -1,4 +1,4 @@
-import type { LocalizedSiteContent, SupportedLanguage } from "@/lib/localized-content";
+import type { LocalizedSiteContent } from "@/lib/localized-content";
 import {
   emptyBilingual,
   type ProjectGalleryImage,

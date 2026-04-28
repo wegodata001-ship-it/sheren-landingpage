@@ -65,18 +65,18 @@ function AccessibilityMenuIcon({ className }: { className?: string }) {
 export default function AccessibilityButton() {
   const { t } = useLanguage();
   const [isOpen, setIsOpen] = useState(false);
-  const [preferences, setPreferences] = useState<AccessibilityState>(defaultState);
+  const [preferences, setPreferences] = useState<AccessibilityState>(() => {
+    if (typeof window === "undefined") {
+      return defaultState;
+    }
 
-  useEffect(() => {
     try {
       const saved = window.localStorage.getItem(STORAGE_KEY);
-      const parsed = saved ? ({ ...defaultState, ...JSON.parse(saved) } as AccessibilityState) : defaultState;
-      setPreferences(parsed);
-      applyPreferences(parsed);
+      return saved ? ({ ...defaultState, ...JSON.parse(saved) } as AccessibilityState) : defaultState;
     } catch {
-      applyPreferences(defaultState);
+      return defaultState;
     }
-  }, []);
+  });
 
   useEffect(() => {
     applyPreferences(preferences);

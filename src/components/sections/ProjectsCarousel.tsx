@@ -38,7 +38,12 @@ export default function ProjectsCarousel({ projects, whatsappNumber }: ProjectsC
 
   return (
     <div className={styles.wrapper}>
-      <ProjectModal project={openProject} whatsappNumber={whatsappNumber} onClose={() => setOpenProject(null)} />
+      <ProjectModal
+        key={openProject?.id || "project-modal"}
+        project={openProject}
+        whatsappNumber={whatsappNumber}
+        onClose={() => setOpenProject(null)}
+      />
 
       <div className={styles.toolbar}>
         <p className={styles.helper}>{copy.helper}</p>

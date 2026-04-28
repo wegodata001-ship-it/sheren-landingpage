@@ -1,6 +1,6 @@
 import { unstable_noStore as noStore } from "next/cache";
 
-import { siteContent, type ProjectItem } from "@/data/siteContent";
+import { siteContent } from "@/data/siteContent";
 import { getMergedLocalizedContent } from "@/lib/localized-content";
 import { mapProjectToPublic } from "@/lib/project-mapper";
 import type { ProjectRecord, PublicProject } from "@/lib/project-types";

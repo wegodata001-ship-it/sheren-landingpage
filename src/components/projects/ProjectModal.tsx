@@ -65,14 +65,6 @@ export default function ProjectModal({ project, whatsappNumber, onClose }: Proje
       return;
     }
 
-    setActiveIndex(0);
-  }, [project]);
-
-  useEffect(() => {
-    if (!project) {
-      return;
-    }
-
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
