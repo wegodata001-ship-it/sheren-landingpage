@@ -19,12 +19,13 @@ export async function uploadImage(file: File, folder: string) {
     type: file.type,
   });
 
-  const { error } = await supabaseAdmin.storage.from(IMAGE_BUCKET).upload(filePath, arrayBuffer, {
+  const { data, error } = await supabaseAdmin.storage.from(IMAGE_BUCKET).upload(filePath, arrayBuffer, {
     contentType: file.type || "application/octet-stream",
     upsert: false,
   });
 
   if (error) {
+    console.error("UPLOAD ERROR:", error);
     console.error("[uploadImage] failed", {
       bucket: IMAGE_BUCKET,
       filePath,
@@ -37,6 +38,7 @@ export async function uploadImage(file: File, folder: string) {
 
   console.log("[uploadImage] success", {
     bucket: IMAGE_BUCKET,
+    storagePath: data?.path || null,
     filePath,
     publicUrl: data.publicUrl,
   });
