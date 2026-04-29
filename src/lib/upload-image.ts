@@ -34,17 +34,17 @@ export async function uploadImage(file: File, folder: string) {
     throw new Error(error.message);
   }
 
-  const { data } = supabaseAdmin.storage.from(IMAGE_BUCKET).getPublicUrl(filePath);
+  const { data: publicUrlData } = supabaseAdmin.storage.from(IMAGE_BUCKET).getPublicUrl(filePath);
 
   console.log("[uploadImage] success", {
     bucket: IMAGE_BUCKET,
     storagePath: data?.path || null,
     filePath,
-    publicUrl: data.publicUrl,
+    publicUrl: publicUrlData.publicUrl,
   });
 
   return {
     filePath,
-    publicUrl: data.publicUrl,
+    publicUrl: publicUrlData.publicUrl,
   };
 }
