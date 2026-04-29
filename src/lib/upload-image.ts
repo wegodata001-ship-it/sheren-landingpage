@@ -10,6 +10,9 @@ export async function uploadImage(file: File, folder: string) {
   const normalizedFolder = folder.replace(/^\/+|\/+$/g, "");
   const filePath = `${normalizedFolder}/${Date.now()}-${safeFileName(file.name)}`;
   const arrayBuffer = await file.arrayBuffer();
+  const contentType = file.type || "image/jpeg";
+
+  console.log("FILE TYPE:", file.type);
 
   console.log("[uploadImage] start", {
     bucket: IMAGE_BUCKET,
@@ -20,7 +23,7 @@ export async function uploadImage(file: File, folder: string) {
   });
 
   const { data, error } = await supabaseAdmin.storage.from(IMAGE_BUCKET).upload(filePath, arrayBuffer, {
-    contentType: file.type || "application/octet-stream",
+    contentType,
     upsert: false,
   });
 
