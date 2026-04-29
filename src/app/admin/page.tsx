@@ -9,6 +9,7 @@ import BilingualContentStudio from "@/components/admin/BilingualContentStudio";
 import AdminSaveButton from "@/components/admin/AdminSaveButton";
 import { isAdminAuthenticated } from "@/lib/admin-auth";
 import { prisma } from "@/lib/prisma";
+import { PROJECTS } from "@/lib/projects";
 import { getPublicSiteData } from "@/lib/site-settings";
 
 import styles from "./page.module.css";
@@ -16,30 +17,32 @@ import styles from "./page.module.css";
 type AdminPageProps = {
   searchParams?: Promise<{
     saved?: string;
+    project?: string;
+    search?: string;
   }>;
 };
 
-type Submission = {
+type LeadRow = {
   id: string;
   name: string;
-  phone?: string | null;
+  phone: string;
   email?: string | null;
   message?: string | null;
-  createdAt?: string | Date;
+  project_key: string;
+  source?: string | null;
+  ip?: string | null;
+  createdAt: Date;
 };
 
-function formatSubmissionDate(value: Submission["createdAt"]) {
-  if (!value) {
-    return "—";
-  }
+function formatLeadDate(value: Date) {
+  return value.toLocaleString("he-IL");
+}
 
-  const date = value instanceof Date ? value : new Date(value);
-
-  if (Number.isNaN(date.getTime())) {
-    return "—";
-  }
-
-  return date.toLocaleString("he-IL");
+function normalizePhone(phone: string) {
+  const cleaned = phone.replace(/\D/g, "");
+  if (cleaned.startsWith("972")) return cleaned;
+  if (cleaned.startsWith("0")) return `972${cleaned.slice(1)}`;
+  return cleaned;
 }
 
 const navigationItems = [
@@ -107,14 +110,31 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
   }
 
   const params = (searchParams ? await searchParams : {}) || {};
-  const [settings, rawSubmissions] = await Promise.all([
+  const requestedProject = params.project?.trim() || PROJECTS.SHIRIN;
+  const validProjects = Object.values(PROJECTS);
+  const selectedProject = validProjects.includes(requestedProject as (typeof validProjects)[number])
+    ? requestedProject
+    : PROJECTS.SHIRIN;
+  const searchTerm = params.search?.trim() || "";
+  const safeSearch = searchTerm.trim().toLowerCase();
+
+  const [settings, rawLeads] = await Promise.all([
     getPublicSiteData(),
-    prisma.contactSubmission.findMany({
+    prisma.lead.findMany({
+      where: { project_key: selectedProject },
       orderBy: { createdAt: "desc" },
-      take: 20,
+      take: 50,
     }),
   ]);
-  const submissions: Submission[] = rawSubmissions;
+  const leads: LeadRow[] = rawLeads;
+  const filteredLeads = leads.filter((lead) => {
+    if (!safeSearch) return true;
+    return (
+      lead.phone.toLowerCase().includes(safeSearch) ||
+      lead.name.toLowerCase().includes(safeSearch) ||
+      (lead.email || "").toLowerCase().includes(safeSearch)
+    );
+  });
 
   return (
     <main className={styles.page}>
@@ -142,7 +162,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
           <div className={styles.sidebarFooter}>
             <div className={styles.miniStat}>
               <span>Leads</span>
-              <strong>{submissions.length}</strong>
+              <strong>{filteredLeads.length}</strong>
             </div>
             <div className={styles.supportBox}>
               <strong>זקוקה לעזרה?</strong>
@@ -178,7 +198,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
             </article>
             <article className={styles.metricCard}>
               <span>פניות חדשות</span>
-              <strong>{submissions.length}</strong>
+              <strong>{filteredLeads.length}</strong>
               <p>טופס האתר מזרים לכאן את כל הלידים שנשמרו.</p>
             </article>
           </div>
@@ -352,7 +372,33 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
               <p>פאנל פניות עם תצוגת table/cards, תאריכים ופרטי קשר קריאים.</p>
             </div>
 
-            {submissions.length ? (
+            <form className={styles.projectsToolbar} method="get">
+              {params.saved ? <input type="hidden" name="saved" value={params.saved} /> : null}
+
+              <label className={styles.selectField}>
+                <span>פרויקט</span>
+                <select name="project" defaultValue={selectedProject}>
+                  {validProjects.map((projectKey) => (
+                    <option key={projectKey} value={projectKey}>
+                      {projectKey}
+                    </option>
+                  ))}
+                </select>
+              </label>
+
+              <label className={styles.selectField}>
+                <span>חיפוש לפי שם / טלפון / אימייל</span>
+                <input name="search" defaultValue={searchTerm} placeholder="הקלידי לחיפוש..." />
+              </label>
+
+              <button type="submit" className={styles.secondaryButton}>
+                סינון לידים
+              </button>
+            </form>
+
+            {!leads.length ? (
+              <div className={styles.emptyState}>No leads yet</div>
+            ) : filteredLeads.length ? (
               <div className={styles.leadsTableWrap}>
                 <table className={styles.leadsTable}>
                   <thead>
@@ -361,17 +407,49 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
                       <th>טלפון</th>
                       <th>אימייל</th>
                       <th>הודעה</th>
+                      <th>Project</th>
+                      <th>Source</th>
+                      <th>IP</th>
+                      <th>WhatsApp</th>
                       <th>תאריך</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {submissions.map((submission: Submission) => (
-                      <tr key={submission.id}>
-                        <td>{submission.name}</td>
-                        <td>{submission.phone || "—"}</td>
-                        <td>{submission.email}</td>
-                        <td className={styles.messageCell}>{submission.message}</td>
-                        <td>{formatSubmissionDate(submission.createdAt)}</td>
+                    {filteredLeads.map((lead) => (
+                      <tr key={lead.id}>
+                        <td>{lead.name}</td>
+                        <td>{lead.phone || "-"}</td>
+                        <td>{lead.email || "-"}</td>
+                        <td className={styles.messageCell}>{lead.message || "-"}</td>
+                        <td>
+                          <span
+                            className={[
+                              styles.tag,
+                              lead.project_key === PROJECTS.SHIRIN ? styles.tagShirinPage : "",
+                            ]
+                              .filter(Boolean)
+                              .join(" ")}
+                          >
+                            {lead.project_key}
+                          </span>
+                        </td>
+                        <td>{lead.source || "-"}</td>
+                        <td>{lead.ip || "-"}</td>
+                        <td>
+                          {normalizePhone(lead.phone) ? (
+                            <a
+                              href={`https://wa.me/${normalizePhone(lead.phone)}`}
+                              target="_blank"
+                              rel="noreferrer"
+                              className={styles.whatsappLink}
+                            >
+                              WhatsApp
+                            </a>
+                          ) : (
+                            "-"
+                          )}
+                        </td>
+                        <td>{formatLeadDate(lead.createdAt)}</td>
                       </tr>
                     ))}
                   </tbody>

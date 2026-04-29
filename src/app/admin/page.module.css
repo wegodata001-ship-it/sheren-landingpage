@@ -408,6 +408,7 @@
 }
 
 .selectField select,
+.selectField input,
 .uploadField input {
   width: 100%;
   min-height: 3.3rem;
@@ -420,6 +421,7 @@
 }
 
 .selectField select:focus,
+.selectField input:focus,
 .uploadField input:focus {
   border-color: #cbbba0;
   box-shadow: 0 0 0 2px rgba(203, 187, 160, 0.2);
@@ -634,6 +636,37 @@
   max-width: 24rem;
   color: #6f655c;
   line-height: 1.7;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  background: #f1ece5;
+  color: #6f655c;
+}
+
+.tagShirinPage {
+  background: #ffe4ec;
+  color: #d63384;
+}
+
+.whatsappLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid rgba(70, 150, 94, 0.2);
+  color: #2c7a47;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.82rem;
+  background: #f4fff7;
 }
 
 .emptyState {

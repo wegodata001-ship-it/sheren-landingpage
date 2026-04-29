@@ -9,6 +9,7 @@ import SectionTitle from "@/components/ui/SectionTitle";
 import { siteConfig } from "@/data/siteConfig";
 import { formatPhoneHref } from "@/lib/helpers";
 import { useLanguage } from "@/lib/i18n/use-language";
+import { PROJECTS } from "@/lib/projects";
 import type { PublicSiteData } from "@/lib/site-settings";
 import { buildWhatsAppLink } from "@/lib/whatsapp";
 
@@ -52,12 +53,15 @@ export default function ContactSection({ settings }: ContactSectionProps) {
     };
 
     try {
-      const response = await fetch("/api/contact", {
+      const response = await fetch("/api/lead", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          ...payload,
+          project_key: PROJECTS.SHIRIN,
+        }),
       });
 
       const data = (await response.json()) as ContactResponse;

@@ -16,6 +16,21 @@ model ContactSubmission {
   updatedAt DateTime @updatedAt
 }
 
+model Lead {
+  id          String   @id @default(cuid())
+  project_key String   @db.VarChar(50)
+  name        String
+  phone       String
+  email       String?
+  message     String?
+  source      String?
+  ip          String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([project_key])
+}
+
 model SiteSettings {
   id                        String   @id @default("default")
   businessName              String?
